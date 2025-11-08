@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("Catalogador.Api")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+aa6f3c2560b6f3609832fb0a12b566fbaea88b1d")]
 [assembly: System.Reflection.AssemblyProductAttribute("Catalogador.Api")]
 [assembly: System.Reflection.AssemblyTitleAttribute("Catalogador.Api")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
