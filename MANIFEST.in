@@ -1,0 +1,8 @@
+# Exclude tests from source distributions
+recursive-exclude tests *
+recursive-exclude catalogador/tests *
+
+# Exclude common unwanted files
+global-exclude *.py[cod]
+global-exclude __pycache__
+global-exclude *.log

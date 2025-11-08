@@ -3,7 +3,10 @@ from setuptools import setup, find_packages
 setup(
     name="catalogador",
     version="0.0.1",
-    packages=find_packages(exclude=("tests", "tests.*")),
+    # Exclude top-level tests and any tests that might accidentally be placed
+    # inside the package directory (catalogador/tests). This prevents the
+    # import-file-mismatch pytest errors caused by duplicated test module names.
+    packages=find_packages(exclude=("tests", "tests.*", "catalogador.tests", "catalogador.tests.*")),
     include_package_data=True,
     description="Catalogador EsSalud backend package (minimal setup.py to enable editable install)",
     install_requires=[
