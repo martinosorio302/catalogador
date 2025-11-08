@@ -1,0 +1,50 @@
+<#
+Enable service autostart and delayed auto-start for Catalogador-PythonAPI.
+Requires Administrator.
+
+Usage (as Admin):
+  .\tools\enable_service_autostart.ps1
+#>
+
+function Require-Admin {
+    if (-not ([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole(
+        [Security.Principal.WindowsBuiltInRole]::Administrator)) {
+        return $false
+    }
+    return $true
+}
+
+# Auto-elevate if not running as Administrator
+if (-not (Require-Admin)) {
+    Write-Host "Not running as Administrator — relaunching elevated..." -ForegroundColor Yellow
+    $ps = (Get-Command powershell).Source
+    $arguments = "-NoProfile -ExecutionPolicy Bypass -File `"$PSCommandPath`""
+    Start-Process -FilePath $ps -ArgumentList $arguments -Verb RunAs
+    exit 0
+}
+
+$svc = 'Catalogador-PythonAPI'
+Write-Host "Setting $svc to start automatically (delayed)" -ForegroundColor Cyan
+# Set startup type to Automatic
+try {
+    Set-Service -Name $svc -StartupType Automatic -ErrorAction Stop
+    Write-Host "Set-Service StartupType=Automatic succeeded" -ForegroundColor Green
+} catch {
+    Write-Warning "Set-Service failed: $_"
+}
+
+# Configure delayed auto-start via sc.exe
+try {
+    sc.exe config $svc start= delayed-auto | Out-Null
+    Write-Host "sc.exe configured delayed-auto start" -ForegroundColor Green
+} catch {
+    Write-Warning "Failed to set delayed-auto via sc.exe: $_"
+}
+
+# Restart service to ensure config applied
+try {
+    Restart-Service -Name $svc -Force -ErrorAction Stop
+    Write-Host "$svc restarted" -ForegroundColor Green
+} catch {
+    Write-Warning "Failed to restart service: $_"
+}

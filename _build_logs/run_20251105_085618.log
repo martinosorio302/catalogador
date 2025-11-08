@@ -1,0 +1,23 @@
+﻿**********************
+Inicio de la transcripción de Windows PowerShell
+Hora de inicio: 20251105085619
+Nombre de usuario: DESKTOP-FKC247N\USER
+Usuario RunAs: DESKTOP-FKC247N\USER
+Nombre de la configuración: 
+Máquina: DESKTOP-FKC247N (Microsoft Windows NT 10.0.19045.0)
+Aplicación host: C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe -NoProfile -ExecutionPolicy Bypass -File C:\Users\USER\Desktop\Catalogador\tools\catalogador_full_fix.ps1 -RunIngest
+Id. de proceso: 1184
+PSVersion: 5.1.19041.6456
+PSEdition: Desktop
+PSCompatibleVersions: 1.0, 2.0, 3.0, 4.0, 5.0, 5.1.19041.6456
+BuildVersion: 10.0.19041.6456
+CLRVersion: 4.0.30319.42000
+WSManStackVersion: 3.0
+PSRemotingProtocolVersion: 2.3
+SerializationVersion: 1.1.0.1
+**********************
+â« Elevando a Administradorâ€¦
+**********************
+Fin de la transcripción de Windows PowerShell
+Hora de finalización: 20251105085624
+**********************

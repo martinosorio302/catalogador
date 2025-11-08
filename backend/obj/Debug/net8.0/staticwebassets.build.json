@@ -1,0 +1,11 @@
+{
+  "Version": 1,
+  "Hash": "7a34jhcfuqyDBcuMlKi8E/QXxnB9BBl7Cq2BDuEhVXk=",
+  "Source": "Catalogador.Api",
+  "BasePath": "_content/Catalogador.Api",
+  "Mode": "Default",
+  "ManifestType": "Build",
+  "ReferencedProjectsConfiguration": [],
+  "DiscoveryPatterns": [],
+  "Assets": []
+}

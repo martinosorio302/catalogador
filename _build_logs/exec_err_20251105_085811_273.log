@@ -1,0 +1,12 @@
+﻿System.IO.FileNotFoundException: Retrieving the COM class factory for component with CLSID {177F0C4A-1CD3-4DE7-A32C-71DBBB9FA36D} failed due to the following error: 8007007e No se puede encontrar el m├│dulo especificado. (0x8007007E).
+   at System.RuntimeTypeHandle.AllocateComObject(Void* pClassFactory)
+   at System.RuntimeType.CreateInstanceDefaultCtor(Boolean publicOnly, Boolean wrapExceptions)
+   at Microsoft.DotNet.Workloads.Workload.VisualStudioWorkloads.GetVisualStudioInstances()
+   at Microsoft.DotNet.Workloads.Workload.VisualStudioWorkloads.GetInstalledWorkloads(IWorkloadResolver workloadResolver, InstalledWorkloadsCollection installedWorkloads, Nullable`1 sdkFeatureBand)
+   at Microsoft.DotNet.Workloads.Workload.List.WorkloadInfoHelper.AddInstalledVsWorkloads(IEnumerable`1 sdkWorkloadIds)
+   at Microsoft.DotNet.Cli.WorkloadCommandParser.ShowWorkloadsInfo(ParseResult parseResult, WorkloadInfoHelper workloadInfoHelper, IReporter reporter, String dotnetDir, Boolean showVersion)
+   at Microsoft.DotNet.Cli.CommandLineInfo.PrintWorkloadsInfo()
+   at Microsoft.DotNet.Cli.CommandLineInfo.PrintInfo()
+   at Microsoft.DotNet.Cli.Program.ProcessArgs(String[] args, TimeSpan startupTime, ITelemetry telemetryClient)
+   at Microsoft.DotNet.Cli.Program.Main(String[] args)
+

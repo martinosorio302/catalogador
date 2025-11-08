@@ -1,0 +1,14 @@
+[
+  {
+    "fondo": "A",
+    "codigo": "X/01",
+    "titulo": "T1",
+    "valor": "TEMPORAL",
+    "retencion": {
+      "gestion": 1,
+      "periferico": 0,
+      "central": 0,
+      "total": 0
+    }
+  }
+]

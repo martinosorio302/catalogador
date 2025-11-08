@@ -1,0 +1,4 @@
+INFO:     127.0.0.1:50413 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:50426 - "POST /reload HTTP/1.1" 200 OK
+INFO:     127.0.0.1:50427 - "GET /series HTTP/1.1" 200 OK
+INFO:     127.0.0.1:50430 - "POST /reload HTTP/1.1" 200 OK

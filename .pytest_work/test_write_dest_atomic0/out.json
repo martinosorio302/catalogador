@@ -1,0 +1,14 @@
+[
+  {
+    "fondo": "B",
+    "codigo": "Y/02",
+    "titulo": "Test2",
+    "valor": "PERMANENTE",
+    "retencion": {
+      "gestion": 2,
+      "periferico": 1,
+      "central": 0,
+      "total": 3
+    }
+  }
+]
