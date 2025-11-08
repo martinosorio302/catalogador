@@ -106,3 +106,4 @@ Frontend: http://localhost:5173
 Notas
 - Si quieres empacar la app Electron, revisa `package.json` en la raíz y en `frontend` y sigue el flujo de electron-builder. En este repo hemos adaptado la UI para que cargue `dist/web` cuando exista.
 # catalogador
+# catalogador
