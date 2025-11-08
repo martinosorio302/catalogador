@@ -1,4 +1,16 @@
+## Track large binary artifacts with Git LFS
 dist-electron/** filter=lfs diff=lfs merge=lfs -text
+dist-electron/**/win-unpacked/** filter=lfs diff=lfs merge=lfs -text
+node_modules/**/electron.exe filter=lfs diff=lfs merge=lfs -text
+**/*.exe filter=lfs diff=lfs merge=lfs -text
+**/*.dll filter=lfs diff=lfs merge=lfs -text
+**/*.zip filter=lfs diff=lfs merge=lfs -text
+
+# Treat text files properly
+*.py text eol=lf
+*.ps1 text eol=crlf
+*.md text eol=lf
+*.json text eol=lfdist-electron/** filter=lfs diff=lfs merge=lfs -text
 node_modules/electron/dist/** filter=lfs diff=lfs merge=lfs -text
 node_modules/**/electron.exe filter=lfs diff=lfs merge=lfs -text
 dist-electron/**/win-unpacked/** filter=lfs diff=lfs merge=lfs -text
