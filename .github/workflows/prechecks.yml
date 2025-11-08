@@ -1,0 +1,24 @@
+name: Prechecks
+
+on:
+  push:
+    branches: [ main, 'fix/**' ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  packaged-tests-check:
+    name: Check packaged tests (fast)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.12'
+
+      - name: Run packaged-tests check
+        run: |
+          python tools/check_no_packaged_tests.py
