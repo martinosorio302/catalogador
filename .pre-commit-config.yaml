@@ -1,0 +1,23 @@
+repos:
+  - repo: local
+    hooks:
+      - id: check-no-packaged-tests
+        name: Check no packaged tests
+        entry: python tools/check_no_packaged_tests.py
+        language: system
+        files: ^tools/check_no_packaged_tests.py$
+        stages: [commit, push]
+      - id: ruff-local
+        name: Ruff (local)
+        entry: ruff check .
+        language: system
+        require_serial: true
+        stages: [commit]
+
+  # Optionally, when pre-commit is available, run some common hooks
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v4.5.0
+    hooks:
+      - id: end-of-file-fixer
+      - id: trailing-whitespace
+      - id: check-yaml

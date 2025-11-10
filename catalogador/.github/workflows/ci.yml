@@ -1,0 +1,59 @@
+name: CI
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+
+jobs:
+  test:
+    name: Test on ${{ matrix.os }} / Python ${{ matrix.python-version }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+        python-version: [3.11, 3.12]
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Upgrade pip and install build tools
+        run: |
+          python -m pip install --upgrade pip setuptools wheel
+
+      - name: Install runtime and dev dependencies (Linux)
+        if: runner.os == 'Linux'
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -r requirements.txt
+          if [ -f dev-requirements.txt ]; then python -m pip install -r dev-requirements.txt; fi
+
+      - name: Install runtime and dev dependencies (Windows)
+        if: runner.os == 'Windows'
+        shell: pwsh
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -r requirements.txt
+          if (Test-Path 'dev-requirements.txt') { python -m pip install -r dev-requirements.txt }
+
+      - name: Install package (editable)
+        run: |
+          python -m pip install -e .
+
+      - name: Lint with ruff
+        run: |
+          python -m ruff check .
+
+      - name: Type-check with mypy
+        run: |
+          python -m mypy .
+
+      - name: Run tests
+        run: |
+          python -m pytest -q

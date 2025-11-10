@@ -1,0 +1,34 @@
+# Python
+__pycache__/ 
+*.py[cod]
+*$py.class
+
+# Virtual environments
+venv/
+.venv/
+env/
+ENV/
+
+# Pytest temp dirs
+.pytest_tmp/
+.pytest_work/
+
+# Editor / OS
+.vscode/
+*.swp
+Thumbs.db
+desktop.ini
+
+# Build / packaging
+dist/
+build/
+*.egg-info/
+
+# Logs
+logs/
+*.log
+
+# Git LFS pointers are tracked separately
+node_modules
+node_modules
+node_modules

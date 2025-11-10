@@ -1,0 +1,11 @@
+2025-11-10T08:17:50.5545456-05:00 - Iniciando limpieza segura del proyecto
+2025-11-10T08:17:50.5605960-05:00 - ProjectPath: C:\Users\USER\Desktop\Catalogador
+2025-11-10T08:17:50.5689582-05:00 - No ScanPaths adicionales
+2025-11-10T08:17:50.5746913-05:00 - QuarantinePath: D:\Catalogador_quarantine
+2025-11-10T08:17:50.5811604-05:00 - WhatIf: False; AutoConfirm: False
+2025-11-10T08:17:50.6017695-05:00 - Etapa 1: Detección de duplicados (hash MD5) -- recomendación: ejecutar en modo WhatIf primero
+2025-11-10T08:17:50.6195959-05:00 - Escaneando: C:\Users\USER\Desktop\Catalogador
+2025-11-10T08:17:55.1965789-05:00 - Etapa 2: Moviendo patrones de basura conocidos (por nombre)
+2025-11-10T08:18:03.7607076-05:00 - Etapa 3: Archivos grandes sin modificar en 365 días (>50 MB)
+2025-11-10T08:18:04.2717818-05:00 - Limpieza finalizada. Reporte en: C:\Users\USER\Desktop\Catalogador\tools\REPORTE_LIMPIEZA_20251110_081750.txt
+2025-11-10T08:18:04.2757262-05:00 - Cuarentena: D:\Catalogador_quarantine
