@@ -7,7 +7,7 @@ router = APIRouter()
 logger = logging.getLogger("catalogador.admin")
 
 
-@router.post('/reload')
+@router.post("/reload")
 def reload_data(request: Request, x_admin_token: str | None = Header(None)):
     """Reload runtime data (TRD JSON) from disk.
 
@@ -17,21 +17,24 @@ def reload_data(request: Request, x_admin_token: str | None = Header(None)):
     internal networks)—but it's recommended to set a token in production.
     """
     # optional auth by env var
-    token_required = os.environ.get('ADMIN_RELOAD_TOKEN')
+    token_required = os.environ.get("ADMIN_RELOAD_TOKEN")
     if token_required:
         if not x_admin_token or x_admin_token != token_required:
-            raise HTTPException(status_code=403, detail='Forbidden')
+            raise HTTPException(status_code=403, detail="Forbidden")
 
     try:
-        logger.info('Reload requested from %s', request.client.host if request.client else 'unknown')
+        logger.info(
+            "Reload requested from %s",
+            request.client.host if request.client else "unknown",
+        )
         result = trd.reload_trd_data()
-        if not result.get('loaded'):
-            raise RuntimeError(result.get('errors') or 'unknown')
-        logger.info('Reloaded TRD data: %s', result.get('counts'))
+        if not result.get("loaded"):
+            raise RuntimeError(result.get("errors") or "unknown")
+        logger.info("Reloaded TRD data: %s", result.get("counts"))
         return {
-            'ok': True,
-            'counts': result.get('counts', {}),
+            "ok": True,
+            "counts": result.get("counts", {}),
         }
     except Exception as e:
-        logger.exception('Failed to reload TRD data')
+        logger.exception("Failed to reload TRD data")
         raise HTTPException(status_code=500, detail=str(e))

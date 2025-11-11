@@ -18,6 +18,7 @@ Usage:
 The script maps common ingester field names into the API's Serie shape
 {fondo,codigo,titulo,valor,retencion} and preserves observations if present.
 """
+
 import argparse
 import json
 from typing import List
@@ -28,6 +29,7 @@ import os
 import tempfile
 import time
 import errno
+
 try:
     import portalocker
 except Exception:
@@ -35,10 +37,27 @@ except Exception:
 
 
 FIELD_MAP = {
-    'fondo': ['fondo', 'fondo_documental', 'fondo_documental_norm', 'fondo_documental_norm'],
-    'codigo': ['codigo', 'codigo_serie', 'serie_codigo', 'codigo_serie_norm', 'codigo_serie'],
-    'titulo': ['titulo', 'serie_documental', 'serie', 'serie_documental_norm', 'serie_documental'],
-    'valor': ['valor', 'valor_serie', 'valor_serie_norm'],
+    "fondo": [
+        "fondo",
+        "fondo_documental",
+        "fondo_documental_norm",
+        "fondo_documental_norm",
+    ],
+    "codigo": [
+        "codigo",
+        "codigo_serie",
+        "serie_codigo",
+        "codigo_serie_norm",
+        "codigo_serie",
+    ],
+    "titulo": [
+        "titulo",
+        "serie_documental",
+        "serie",
+        "serie_documental_norm",
+        "serie_documental",
+    ],
+    "valor": ["valor", "valor_serie", "valor_serie_norm"],
 }
 
 
@@ -73,19 +92,26 @@ def pick(d, candidates, default=None):
             import tempfile
             import time
             import errno
+
             try:
                 import portalocker
             except Exception:
                 portalocker = None
-    obs = pick(row, ['observaciones', 'observacion', 'observaciones_norm', 'observaciones_raw'], None)
+    obs = pick(
+        row,
+        ["observaciones", "observacion", "observaciones_norm", "observaciones_raw"],
+        None,
+    )
     if obs:
-        out['observaciones'] = obs
+        out["observaciones"] = obs
     return out
 
 
 def load_json(path: Path):
-    with path.open('r', encoding='utf-8') as f:
+    with path.open("r", encoding="utf-8") as f:
         return json.load(f)
+
+
 #!/usr/bin/env python3
 """tools/import_retencion.py
 --------------------------------
@@ -114,6 +140,7 @@ import os
 import tempfile
 import time
 import errno
+
 try:
     import portalocker
 except Exception:
@@ -121,10 +148,27 @@ except Exception:
 
 
 FIELD_MAP = {
-    'fondo': ['fondo', 'fondo_documental', 'fondo_documental_norm', 'fondo_documental_norm'],
-    'codigo': ['codigo', 'codigo_serie', 'serie_codigo', 'codigo_serie_norm', 'codigo_serie'],
-    'titulo': ['titulo', 'serie_documental', 'serie', 'serie_documental_norm', 'serie_documental'],
-    'valor': ['valor', 'valor_serie', 'valor_serie_norm'],
+    "fondo": [
+        "fondo",
+        "fondo_documental",
+        "fondo_documental_norm",
+        "fondo_documental_norm",
+    ],
+    "codigo": [
+        "codigo",
+        "codigo_serie",
+        "serie_codigo",
+        "codigo_serie_norm",
+        "codigo_serie",
+    ],
+    "titulo": [
+        "titulo",
+        "serie_documental",
+        "serie",
+        "serie_documental_norm",
+        "serie_documental",
+    ],
+    "valor": ["valor", "valor_serie", "valor_serie_norm"],
 }
 
 
@@ -138,10 +182,10 @@ def pick(d, candidates, default=None):
 def map_retention(row):
     r = {}
     keys = {
-        'gestion': ['retencion_gestion', 'ret_gestion', 'gestion'],
-        'periferico': ['retencion_periferico', 'ret_periferico', 'periferico'],
-        'central': ['retencion_central', 'ret_central', 'central'],
-        'total': ['retencion_total', 'ret_total', 'total'],
+        "gestion": ["retencion_gestion", "ret_gestion", "gestion"],
+        "periferico": ["retencion_periferico", "ret_periferico", "periferico"],
+        "central": ["retencion_central", "ret_central", "central"],
+        "total": ["retencion_total", "ret_total", "total"],
     }
     for outk, cand in keys.items():
         val = pick(row, cand, 0)
@@ -157,28 +201,34 @@ def map_retention(row):
 
 def normalize_record(row):
     out = {}
-    out['fondo'] = pick(row, FIELD_MAP['fondo'], '')
-    out['codigo'] = pick(row, FIELD_MAP['codigo'], '')
-    out['titulo'] = pick(row, FIELD_MAP['titulo'], '')
-    out['valor'] = pick(row, FIELD_MAP['valor'], '')
-    out['retencion'] = map_retention(row)
-    obs = pick(row, ['observaciones', 'observacion', 'observaciones_norm', 'observaciones_raw'], None)
+    out["fondo"] = pick(row, FIELD_MAP["fondo"], "")
+    out["codigo"] = pick(row, FIELD_MAP["codigo"], "")
+    out["titulo"] = pick(row, FIELD_MAP["titulo"], "")
+    out["valor"] = pick(row, FIELD_MAP["valor"], "")
+    out["retencion"] = map_retention(row)
+    obs = pick(
+        row,
+        ["observaciones", "observacion", "observaciones_norm", "observaciones_raw"],
+        None,
+    )
     if obs:
-        out['observaciones'] = obs
+        out["observaciones"] = obs
     return out
 
 
 def load_json(path: Path):
-    with path.open('r', encoding='utf-8') as f:
+    with path.open("r", encoding="utf-8") as f:
         return json.load(f)
 
 
 def write_dest(records, dest: Path):
     """Atomically write JSON `records` to `dest` (single destination helper)."""
     dest.parent.mkdir(parents=True, exist_ok=True)
-    fd, tmp_path = tempfile.mkstemp(prefix=dest.name + '.', suffix='.tmp', dir=str(dest.parent))
+    fd, tmp_path = tempfile.mkstemp(
+        prefix=dest.name + ".", suffix=".tmp", dir=str(dest.parent)
+    )
     try:
-        with os.fdopen(fd, 'w', encoding='utf-8') as tf:
+        with os.fdopen(fd, "w", encoding="utf-8") as tf:
             json.dump(records, tf, ensure_ascii=False, indent=2)
             tf.flush()
             try:
@@ -193,8 +243,8 @@ def write_dest(records, dest: Path):
         while True:
             try:
                 if portalocker:
-                    lock_path = dest.with_name(dest.name + '.lock')
-                    with portalocker.Lock(str(lock_path), 'w', timeout=5):
+                    lock_path = dest.with_name(dest.name + ".lock")
+                    with portalocker.Lock(str(lock_path), "w", timeout=5):
                         os.replace(tmp_path, str(dest))
                 else:
                     os.replace(tmp_path, str(dest))
@@ -231,11 +281,13 @@ def write_multiple_atomic(records, dest_paths: List[Path]):
     try:
         for dest in dest_paths:
             dest.parent.mkdir(parents=True, exist_ok=True)
-            lock_path = dest.with_name(dest.name + '.lock')
+            lock_path = dest.with_name(dest.name + ".lock")
             if portalocker:
-                with portalocker.Lock(str(lock_path), 'w', timeout=10):
-                    fd, tmp_path = tempfile.mkstemp(prefix=dest.name + '.', suffix='.tmp', dir=str(dest.parent))
-                    with os.fdopen(fd, 'w', encoding='utf-8') as tf:
+                with portalocker.Lock(str(lock_path), "w", timeout=10):
+                    fd, tmp_path = tempfile.mkstemp(
+                        prefix=dest.name + ".", suffix=".tmp", dir=str(dest.parent)
+                    )
+                    with os.fdopen(fd, "w", encoding="utf-8") as tf:
                         json.dump(records, tf, ensure_ascii=False, indent=2)
                         tf.flush()
                         try:
@@ -244,8 +296,10 @@ def write_multiple_atomic(records, dest_paths: List[Path]):
                             pass
                     temps.append((tmp_path, str(dest)))
             else:
-                fd, tmp_path = tempfile.mkstemp(prefix=dest.name + '.', suffix='.tmp', dir=str(dest.parent))
-                with os.fdopen(fd, 'w', encoding='utf-8') as tf:
+                fd, tmp_path = tempfile.mkstemp(
+                    prefix=dest.name + ".", suffix=".tmp", dir=str(dest.parent)
+                )
+                with os.fdopen(fd, "w", encoding="utf-8") as tf:
                     json.dump(records, tf, ensure_ascii=False, indent=2)
                     tf.flush()
                     try:
@@ -264,8 +318,8 @@ def write_multiple_atomic(records, dest_paths: List[Path]):
             while True:
                 try:
                     if portalocker:
-                        lock_path = dest_path.with_name(dest_path.name + '.lock')
-                        with portalocker.Lock(str(lock_path), 'w', timeout=10):
+                        lock_path = dest_path.with_name(dest_path.name + ".lock")
+                        with portalocker.Lock(str(lock_path), "w", timeout=10):
                             os.replace(tmp_path, dest_str)
                     else:
                         os.replace(tmp_path, dest_str)
@@ -295,52 +349,70 @@ def write_multiple_atomic(records, dest_paths: List[Path]):
         raise
 
 
-def try_reload(host='127.0.0.1', port=8000, timeout=5):
-    url = f'http://{host}:{port}/reload'
+def try_reload(host="127.0.0.1", port=8000, timeout=5):
+    url = f"http://{host}:{port}/reload"
     try:
         import requests
+
         try:
             r = requests.post(url, timeout=timeout)
             try:
                 body = r.text
             except Exception:
-                body = '<non-text body>'
-            print('Reload response:', r.status_code, body)
+                body = "<non-text body>"
+            print("Reload response:", r.status_code, body)
             return 200 <= r.status_code < 300
         except Exception as e:
-            print('Could not reload API via requests:', e)
+            print("Could not reload API via requests:", e)
             return False
     except Exception:
         # fallback to urllib
-        req = urllib.request.Request(url, method='POST')
+        req = urllib.request.Request(url, method="POST")
         try:
             with urllib.request.urlopen(req, timeout=timeout) as resp:
-                body = resp.read().decode('utf-8')
-                print('Reload response:', body)
+                body = resp.read().decode("utf-8")
+                print("Reload response:", body)
                 return True
         except Exception as e:
-            print('Could not reload API (it may not be running):', e)
+            print("Could not reload API (it may not be running):", e)
             return False
 
 
 def main():
     p = argparse.ArgumentParser()
-    p.add_argument('--src', required=True, help='Source JSON file produced by the ingester')
-    p.add_argument('--dest', default='api/data/essalud_pcd_anexo02.full.json', help='Primary destination path inside repo')
-    p.add_argument('--no-reload', action='store_true', help='Do not POST /reload to the local API after copying')
-    p.add_argument('--reload-host', default='127.0.0.1', help='Host for the API reload endpoint')
-    p.add_argument('--reload-port', default=8000, type=int, help='Port for the API reload endpoint (default 8000)')
+    p.add_argument(
+        "--src", required=True, help="Source JSON file produced by the ingester"
+    )
+    p.add_argument(
+        "--dest",
+        default="api/data/essalud_pcd_anexo02.full.json",
+        help="Primary destination path inside repo",
+    )
+    p.add_argument(
+        "--no-reload",
+        action="store_true",
+        help="Do not POST /reload to the local API after copying",
+    )
+    p.add_argument(
+        "--reload-host", default="127.0.0.1", help="Host for the API reload endpoint"
+    )
+    p.add_argument(
+        "--reload-port",
+        default=8000,
+        type=int,
+        help="Port for the API reload endpoint (default 8000)",
+    )
     args = p.parse_args()
 
     src = Path(args.src)
     if not src.exists():
-        print('Source file not found:', src, file=sys.stderr)
+        print("Source file not found:", src, file=sys.stderr)
         sys.exit(2)
 
     data = load_json(src)
     # data may be an object with a "rows" key or a plain list
-    if isinstance(data, dict) and 'rows' in data and isinstance(data['rows'], list):
-        raw = data['rows']
+    if isinstance(data, dict) and "rows" in data and isinstance(data["rows"], list):
+        raw = data["rows"]
     elif isinstance(data, list):
         raw = data
     else:
@@ -349,31 +421,33 @@ def main():
         else:
             raw = []
 
-    print(f'Loaded {len(raw)} records from {src}')
+    print(f"Loaded {len(raw)} records from {src}")
 
     normalized = [normalize_record(r) for r in raw]
 
     dest = Path(args.dest)
     dests = [dest]
-    data_dir_env = os.getenv('DATA_DIR')
+    data_dir_env = os.getenv("DATA_DIR")
     if data_dir_env:
         data_dir_path = Path(data_dir_env) / dest.name
         dests.append(data_dir_path)
-    repo_root_data = Path(__file__).resolve().parents[1] / 'data' / dest.name
+    repo_root_data = Path(__file__).resolve().parents[1] / "data" / dest.name
     dests.append(repo_root_data)
 
     try:
         write_multiple_atomic(normalized, dests)
-        print('Wrote destinations:', ', '.join(str(d) for d in dests))
+        print("Wrote destinations:", ", ".join(str(d) for d in dests))
     except Exception as e:
-        print('Failed to write destination files atomically:', e, file=sys.stderr)
+        print("Failed to write destination files atomically:", e, file=sys.stderr)
         sys.exit(3)
 
     if not args.no_reload:
         ok = try_reload(host=args.reload_host, port=args.reload_port)
         if not ok:
-            print(f'Reload to {args.reload_host}:{args.reload_port} failed; you can retry manually.')
+            print(
+                f"Reload to {args.reload_host}:{args.reload_port} failed; you can retry manually."
+            )
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

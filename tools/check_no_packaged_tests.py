@@ -8,6 +8,7 @@ Exit code:
  - 0 if OK (no packaged tests)
  - 1 if packaged tests are found
 """
+
 import os
 import sys
 
@@ -26,7 +27,9 @@ def main() -> int:
             for f in files:
                 if f.endswith(".py"):
                     print(os.path.join(root, f))
-        print("\nThis can cause pytest import collisions. Please keep tests/ at the repo root and out of the packaged package.")
+        print(
+            "\nThis can cause pytest import collisions. Please keep tests/ at the repo root and out of the packaged package."
+        )
         return 1
 
     print("OK: No packaged tests found.")

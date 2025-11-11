@@ -11,7 +11,7 @@ def classify(req: ClassifyRequest):
     payload = req.model_dump()
     out = trd.aplicar_reglas_trd(payload)
     # attach inventory description when available
-    code = out.get('code')
+    code = out.get("code")
     if code:
-        out['descripcionInventario'] = trd.INVENTARIO_DESCRIPCION.get(code)
+        out["descripcionInventario"] = trd.INVENTARIO_DESCRIPCION.get(code)
     return out

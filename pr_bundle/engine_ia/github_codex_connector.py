@@ -15,6 +15,7 @@ Notes:
   comments you'd need to compute patch positions; this script keeps things
   simple and posts a readable summary instead.
 """
+
 import os
 import sys
 import argparse

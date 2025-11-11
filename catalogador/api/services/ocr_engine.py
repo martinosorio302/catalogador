@@ -10,6 +10,7 @@ def extract_text_from_pdf(path: Path) -> str:
     """
     try:
         import fitz
+
         doc = fitz.open(str(path))
         text_parts = []
         for page in doc:
@@ -21,9 +22,12 @@ def extract_text_from_pdf(path: Path) -> str:
         pass
 
     # Try pdftotext (poppler)
-    if shutil.which('pdftotext'):
-        out = subprocess.run(['pdftotext', '-layout', '-enc', 'UTF-8', str(path), '-'], stdout=subprocess.PIPE)
-        return out.stdout.decode('utf-8', errors='replace')
+    if shutil.which("pdftotext"):
+        out = subprocess.run(
+            ["pdftotext", "-layout", "-enc", "UTF-8", str(path), "-"],
+            stdout=subprocess.PIPE,
+        )
+        return out.stdout.decode("utf-8", errors="replace")
 
     # Fallback: empty
     return ""
