@@ -1,9 +1,14 @@
 from fastapi import FastAPI, UploadFile, File, Body
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
-import uvicorn, json, yaml, os, hashlib, re
+import uvicorn
+import json
+import yaml
+import os
+import hashlib
+import re
 import fitz
-from typing import Dict, Any, List, Optional
+from typing import Dict, Any, List
 from schemas.inventory_schema import Inventory
 from ml import pipeline_extract, clf_train
 

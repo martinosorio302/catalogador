@@ -28,7 +28,6 @@ import urllib.request
 import os
 import tempfile
 import time
-import errno
 
 try:
     import portalocker
@@ -82,16 +81,6 @@ def pick(d, candidates, default=None):
             The script maps common ingester field names into the API's Serie shape
             {fondo,codigo,titulo,valor,retencion} and preserves observations if present.
             """
-            import argparse
-            import json
-            from typing import List
-            from pathlib import Path
-            import sys
-            import urllib.request
-            import os
-            import tempfile
-            import time
-            import errno
 
             try:
                 import portalocker
@@ -130,16 +119,7 @@ Usage:
 The script maps common ingester field names into the API's Serie shape
 {fondo,codigo,titulo,valor,retencion} and preserves observations if present.
 """
-import argparse
-import json
-from typing import List
 from pathlib import Path
-import sys
-import urllib.request
-import os
-import tempfile
-import time
-import errno
 
 try:
     import portalocker
