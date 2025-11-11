@@ -1,107 +1,4 @@
 #!/usr/bin/env python3
-r"""tools/import_retencion.py
---------------------------------
-Normalize ingester output into the repository and trigger the running API to
-reload. This script is idempotent: it will overwrite destination files and can
-optionally call the API reload endpoint.
-
-Behavior added by autofix:
- - Writes normalized JSON to both `api/data/essalud_pcd_anexo02.full.json`
-     and repository `data/essalud_pcd_anexo02.full.json` so both dev and
-     deployed service locations are covered.
- - POSTs /reload to a configurable host/port (default 127.0.0.1:8000).
-
-Usage:
-    python tools/import_retencion.py --src "C:\path\to\retencion_normalizada.json" \
-            [--dest "api/data/essalud_pcd_anexo02.full.json"] [--reload]
-
-The script maps common ingester field names into the API's Serie shape
-{fondo,codigo,titulo,valor,retencion} and preserves observations if present.
-"""
-
-import argparse
-import json
-from typing import List
-from pathlib import Path
-import sys
-import urllib.request
-import os
-import tempfile
-import time
-
-try:
-    import portalocker
-except Exception:
-    portalocker = None
-
-
-FIELD_MAP = {
-    "fondo": [
-        "fondo",
-        "fondo_documental",
-        "fondo_documental_norm",
-        "fondo_documental_norm",
-    ],
-    "codigo": [
-        "codigo",
-        "codigo_serie",
-        "serie_codigo",
-        "codigo_serie_norm",
-        "codigo_serie",
-    ],
-    "titulo": [
-        "titulo",
-        "serie_documental",
-        "serie",
-        "serie_documental_norm",
-        "serie_documental",
-    ],
-    "valor": ["valor", "valor_serie", "valor_serie_norm"],
-}
-
-
-def pick(d, candidates, default=None):
-    for k in candidates:
-        if k in d and d[k] not in (None, ""):
-            #!/usr/bin/env python3
-            r"""tools/import_retencion.py
-            --------------------------------
-            Normalize ingester output into the repository and trigger the running API to
-            reload. This script is idempotent: it will overwrite destination files and can
-            optionally call the API reload endpoint.
-
-            Behavior added by autofix:
-             - Writes normalized JSON to multiple destinations (primary, DATA_DIR, repo data)
-             - POSTs /reload to a configurable host/port (default 127.0.0.1:8000).
-
-            Usage:
-                python tools/import_retencion.py --src "C:\path\to\retencion_normalizada.json" \
-                        [--dest "api/data/essalud_pcd_anexo02.full.json"] [--no-reload]
-
-            The script maps common ingester field names into the API's Serie shape
-            {fondo,codigo,titulo,valor,retencion} and preserves observations if present.
-            """
-
-            try:
-                import portalocker
-            except Exception:
-                portalocker = None
-    obs = pick(
-        row,
-        ["observaciones", "observacion", "observaciones_norm", "observaciones_raw"],
-        None,
-    )
-    if obs:
-        out["observaciones"] = obs
-    return out
-
-
-def load_json(path: Path):
-    with path.open("r", encoding="utf-8") as f:
-        return json.load(f)
-
-
-#!/usr/bin/env python3
 """tools/import_retencion.py
 --------------------------------
 Normalize ingester output into the repository and trigger the running API to
@@ -113,17 +10,28 @@ Behavior added by autofix:
  - POSTs /reload to a configurable host/port (default 127.0.0.1:8000).
 
 Usage:
-    python -m tools.import_retencion --src "C:\path\to\retencion_normalizada.json" \
+    python tools/import_retencion.py --src "C:\path\to\retencion_normalizada.json" \
             [--dest "api/data/essalud_pcd_anexo02.full.json"] [--no-reload]
 
 The script maps common ingester field names into the API's Serie shape
 {fondo,codigo,titulo,valor,retencion} and preserves observations if present.
 """
+
+from __future__ import annotations
+
+import argparse
+import json
+import os
+import sys
+import tempfile
+import time
+import urllib.request
 from pathlib import Path
+from typing import List, Optional
 
 try:
     import portalocker
-except Exception:
+except Exception:  # pragma: no cover - optional cross-process lock
     portalocker = None
 
 
@@ -132,35 +40,32 @@ FIELD_MAP = {
         "fondo",
         "fondo_documental",
         "fondo_documental_norm",
-        "fondo_documental_norm",
     ],
     "codigo": [
         "codigo",
         "codigo_serie",
         "serie_codigo",
         "codigo_serie_norm",
-        "codigo_serie",
     ],
     "titulo": [
         "titulo",
         "serie_documental",
         "serie",
         "serie_documental_norm",
-        "serie_documental",
     ],
     "valor": ["valor", "valor_serie", "valor_serie_norm"],
 }
 
 
-def pick(d, candidates, default=None):
+def pick(d: dict, candidates: List[str], default=None):
     for k in candidates:
         if k in d and d[k] not in (None, ""):
             return d[k]
     return default
 
 
-def map_retention(row):
-    r = {}
+def map_retention(row: dict) -> dict:
+    r: dict = {}
     keys = {
         "gestion": ["retencion_gestion", "ret_gestion", "gestion"],
         "periferico": ["retencion_periferico", "ret_periferico", "periferico"],
@@ -179,8 +84,8 @@ def map_retention(row):
     return r
 
 
-def normalize_record(row):
-    out = {}
+def normalize_record(row: dict) -> dict:
+    out: dict = {}
     out["fondo"] = pick(row, FIELD_MAP["fondo"], "")
     out["codigo"] = pick(row, FIELD_MAP["codigo"], "")
     out["titulo"] = pick(row, FIELD_MAP["titulo"], "")
@@ -201,12 +106,10 @@ def load_json(path: Path):
         return json.load(f)
 
 
-def write_dest(records, dest: Path):
+def write_dest(records: list, dest: Path):
     """Atomically write JSON `records` to `dest` (single destination helper)."""
     dest.parent.mkdir(parents=True, exist_ok=True)
-    fd, tmp_path = tempfile.mkstemp(
-        prefix=dest.name + ".", suffix=".tmp", dir=str(dest.parent)
-    )
+    fd, tmp_path = tempfile.mkstemp(prefix=dest.name + ".", suffix=".tmp", dir=str(dest.parent))
     try:
         with os.fdopen(fd, "w", encoding="utf-8") as tf:
             json.dump(records, tf, ensure_ascii=False, indent=2)
@@ -215,11 +118,7 @@ def write_dest(records, dest: Path):
                 os.fsync(tf.fileno())
             except Exception:
                 pass
-        # Replace with retry to handle transient Windows permission errors when
-        # other processes may have the target file briefly open. If portalocker
-        # is available we also try to acquire a short exclusive lock on a
-        # sidecar lock file to coordinate replaces across processes.
-        _attempts = 0
+        attempts = 0
         while True:
             try:
                 if portalocker:
@@ -230,9 +129,8 @@ def write_dest(records, dest: Path):
                     os.replace(tmp_path, str(dest))
                 break
             except PermissionError:
-                _attempts += 1
-                if _attempts >= 6:
-                    # final attempt: try to remove target then replace
+                attempts += 1
+                if attempts >= 6:
                     try:
                         if os.path.exists(dest):
                             os.remove(dest)
@@ -240,7 +138,7 @@ def write_dest(records, dest: Path):
                         pass
                     os.replace(tmp_path, str(dest))
                     break
-                time.sleep(0.05 * _attempts)
+                time.sleep(0.05 * attempts)
     finally:
         if os.path.exists(tmp_path):
             try:
@@ -249,7 +147,7 @@ def write_dest(records, dest: Path):
                 pass
 
 
-def write_multiple_atomic(records, dest_paths: List[Path]):
+def write_multiple_atomic(records: list, dest_paths: List[Path]):
     """Write the same JSON `records` atomically to multiple destinations.
 
     Strategy: create temp files next to each destination, write contents, fsync,
@@ -257,16 +155,14 @@ def write_multiple_atomic(records, dest_paths: List[Path]):
     temp files and raise an exception. Uses portalocker when available to
     coordinate cross-process writes to the same destination.
     """
-    temps = []
+    temps: List[tuple] = []
     try:
         for dest in dest_paths:
             dest.parent.mkdir(parents=True, exist_ok=True)
-            lock_path = dest.with_name(dest.name + ".lock")
             if portalocker:
+                lock_path = dest.with_name(dest.name + ".lock")
                 with portalocker.Lock(str(lock_path), "w", timeout=10):
-                    fd, tmp_path = tempfile.mkstemp(
-                        prefix=dest.name + ".", suffix=".tmp", dir=str(dest.parent)
-                    )
+                    fd, tmp_path = tempfile.mkstemp(prefix=dest.name + ".", suffix=".tmp", dir=str(dest.parent))
                     with os.fdopen(fd, "w", encoding="utf-8") as tf:
                         json.dump(records, tf, ensure_ascii=False, indent=2)
                         tf.flush()
@@ -276,9 +172,7 @@ def write_multiple_atomic(records, dest_paths: List[Path]):
                             pass
                     temps.append((tmp_path, str(dest)))
             else:
-                fd, tmp_path = tempfile.mkstemp(
-                    prefix=dest.name + ".", suffix=".tmp", dir=str(dest.parent)
-                )
+                fd, tmp_path = tempfile.mkstemp(prefix=dest.name + ".", suffix=".tmp", dir=str(dest.parent))
                 with os.fdopen(fd, "w", encoding="utf-8") as tf:
                     json.dump(records, tf, ensure_ascii=False, indent=2)
                     tf.flush()
@@ -288,10 +182,6 @@ def write_multiple_atomic(records, dest_paths: List[Path]):
                         pass
                 temps.append((tmp_path, str(dest)))
 
-        # all temp files written successfully; perform atomic replace.
-        # On Windows an os.replace can raise PermissionError if another
-        # process has the destination open. We retry with short backoff and
-        # (when available) acquire the sidecar lock while replacing.
         for tmp_path, dest_str in temps:
             dest_path = Path(dest_str)
             attempts = 0
@@ -307,19 +197,16 @@ def write_multiple_atomic(records, dest_paths: List[Path]):
                 except PermissionError:
                     attempts += 1
                     if attempts >= 8:
-                        # last resort: try to remove the destination and replace
                         try:
                             if dest_path.exists():
                                 dest_path.unlink()
                         except Exception:
                             pass
-                        # final attempt (let exception propagate if it fails)
                         os.replace(tmp_path, dest_str)
                         break
                     time.sleep(0.05 * attempts)
         temps = []
     except Exception:
-        # cleanup temps
         for tmp_path, _ in temps:
             try:
                 if os.path.exists(tmp_path):
@@ -329,7 +216,7 @@ def write_multiple_atomic(records, dest_paths: List[Path]):
         raise
 
 
-def try_reload(host="127.0.0.1", port=8000, timeout=5):
+def try_reload(host: str = "127.0.0.1", port: int = 8000, timeout: int = 5) -> bool:
     url = f"http://{host}:{port}/reload"
     try:
         import requests
@@ -346,7 +233,6 @@ def try_reload(host="127.0.0.1", port=8000, timeout=5):
             print("Could not reload API via requests:", e)
             return False
     except Exception:
-        # fallback to urllib
         req = urllib.request.Request(url, method="POST")
         try:
             with urllib.request.urlopen(req, timeout=timeout) as resp:
@@ -358,11 +244,9 @@ def try_reload(host="127.0.0.1", port=8000, timeout=5):
             return False
 
 
-def main():
+def main() -> None:
     p = argparse.ArgumentParser()
-    p.add_argument(
-        "--src", required=True, help="Source JSON file produced by the ingester"
-    )
+    p.add_argument("--src", required=True, help="Source JSON file produced by the ingester")
     p.add_argument(
         "--dest",
         default="api/data/essalud_pcd_anexo02.full.json",
@@ -373,9 +257,7 @@ def main():
         action="store_true",
         help="Do not POST /reload to the local API after copying",
     )
-    p.add_argument(
-        "--reload-host", default="127.0.0.1", help="Host for the API reload endpoint"
-    )
+    p.add_argument("--reload-host", default="127.0.0.1", help="Host for the API reload endpoint")
     p.add_argument(
         "--reload-port",
         default=8000,
@@ -390,7 +272,6 @@ def main():
         sys.exit(2)
 
     data = load_json(src)
-    # data may be an object with a "rows" key or a plain list
     if isinstance(data, dict) and "rows" in data and isinstance(data["rows"], list):
         raw = data["rows"]
     elif isinstance(data, list):
@@ -406,7 +287,7 @@ def main():
     normalized = [normalize_record(r) for r in raw]
 
     dest = Path(args.dest)
-    dests = [dest]
+    dests: List[Path] = [dest]
     data_dir_env = os.getenv("DATA_DIR")
     if data_dir_env:
         data_dir_path = Path(data_dir_env) / dest.name
@@ -424,9 +305,7 @@ def main():
     if not args.no_reload:
         ok = try_reload(host=args.reload_host, port=args.reload_port)
         if not ok:
-            print(
-                f"Reload to {args.reload_host}:{args.reload_port} failed; you can retry manually."
-            )
+            print(f"Reload to {args.reload_host}:{args.reload_port} failed; you can retry manually.")
 
 
 if __name__ == "__main__":
