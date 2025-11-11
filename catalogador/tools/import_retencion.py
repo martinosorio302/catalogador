@@ -27,7 +27,7 @@ import tempfile
 import time
 import urllib.request
 from pathlib import Path
-from typing import List, Optional
+from typing import List
 
 try:
     import portalocker
