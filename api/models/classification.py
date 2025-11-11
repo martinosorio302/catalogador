@@ -2,6 +2,10 @@ from pydantic import BaseModel
 from typing import Optional
 
 
+from pydantic import BaseModel
+from typing import Optional
+
+
 class ClassifyRequest(BaseModel):
     asuntoUnidad: Optional[str] = None
     titulo: Optional[str] = None
