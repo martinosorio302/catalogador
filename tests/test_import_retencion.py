@@ -1,5 +1,3 @@
-import json
-
 from catalogador.tools.import_retencion import normalize_record
 
 

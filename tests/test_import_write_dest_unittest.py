@@ -2,7 +2,7 @@ import json
 import unittest
 from pathlib import Path
 
-from tools import import_retencion as ir
+from catalogador.tools import import_retencion as ir
 
 
 class TestImportWriteDest(unittest.TestCase):

@@ -1,7 +1,7 @@
 import json
 
 # import the module under test
-from tools import import_retencion as ir
+from catalogador.tools import import_retencion as ir
 
 
 def test_write_dest_atomic(tmp_path):

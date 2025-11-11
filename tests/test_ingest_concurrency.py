@@ -5,7 +5,7 @@ from pathlib import Path
 
 def _worker_write(dest_path: str, payload: dict, delay: float = 0.0):
     # Import inside worker to avoid pickle issues
-    from tools.import_retencion import write_dest
+    from catalogador.tools.import_retencion import write_dest
     import time
 
     if delay:
