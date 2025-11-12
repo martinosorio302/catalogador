@@ -8,17 +8,25 @@ echo   Catalogador EsSalud - Compilador Automatico
 echo ================================================================
 echo.
 
-REM Verificar si PowerShell está disponible
-where powershell >nul 2>nul
-if %ERRORLEVEL% NEQ 0 (
-    echo ERROR: PowerShell no encontrado
-    echo.
-    pause
-    exit /b 1
+REM Verificar si PowerShell está disponible (pwsh 7+ o powershell 5.x)
+where pwsh >nul 2>nul
+if %ERRORLEVEL% EQU 0 (
+    set PWSH_CMD=pwsh
+) else (
+    where powershell >nul 2>nul
+    if %ERRORLEVEL% EQU 0 (
+        set PWSH_CMD=powershell
+    ) else (
+        echo ERROR: PowerShell no encontrado
+        echo Por favor instala PowerShell 7+ o Windows PowerShell 5.x
+        echo.
+        pause
+        exit /b 1
+    )
 )
 
 REM Ejecutar script PowerShell
-powershell -ExecutionPolicy Bypass -File "%~dp0scripts\build_all.ps1" %*
+%PWSH_CMD% -ExecutionPolicy Bypass -File "%~dp0scripts\build_all.ps1" %*
 
 if %ERRORLEVEL% EQU 0 (
     echo.
