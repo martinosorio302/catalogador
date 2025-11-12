@@ -8,7 +8,7 @@
 param()
 
 $scriptRoot = Split-Path -Parent $MyInvocation.MyCommand.Definition
-$orig = Join-Path $scriptRoot 'catalogador_full_fix.ps1'
+$orig = Join-Path $scriptRoot '..\catalogador_full_fix.ps1'
 if(-not (Test-Path $orig)){ Write-Error "Original orchestrator not found: $orig"; exit 2 }
 
 $text = Get-Content -Path $orig -Raw -ErrorAction Stop

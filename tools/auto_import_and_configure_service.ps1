@@ -2,7 +2,7 @@ param(
   [switch]$RunIngest,
   [string]$IngestPdfPath,
   [string]$ApiHost = "127.0.0.1",
-  [int]$ApiPort = 8000
+  [int]$ApiPort = 0
 )
 
 $RepoRoot    = "C:\Users\USER\Desktop\Catalogador"
@@ -11,6 +11,13 @@ $VenvPython  = Join-Path $ProgramRoot "venv\Scripts\python.exe"
 $NssmExe     = "C:\ProgramData\nssm\nssm.exe"
 $ServiceName = "Catalogador-PythonAPI"
 $LogsDir     = Join-Path $ProgramRoot "logs"
+
+# Prefer canonical helper for API port if available; fall back to 8000
+$portHelper = Join-Path $RepoRoot 'tools\get_backend_port.ps1'
+if (Test-Path $portHelper) {
+  try { $helperPort = [int](& $portHelper); if ($helperPort) { $ApiPort = $helperPort } } catch {}
+}
+if (-not $ApiPort -or $ApiPort -eq 0) { $ApiPort = 8000 }
 
 function I([string]$m){ Write-Host $m -ForegroundColor Cyan }
 function S([string]$m){ Write-Host $m -ForegroundColor Green }

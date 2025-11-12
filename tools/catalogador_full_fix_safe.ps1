@@ -28,7 +28,11 @@ $RunDir = Join-Path $ProgramRoot 'run'
 $PidFile = Join-Path $RunDir '.python_api.pid'
 $ServiceName = 'Catalogador-PythonAPI'
 $ApiHost = '127.0.0.1'
-$ApiPort = 8000
+# Resolve API port via canonical helper (runtime/backend_port.txt or env) when available
+$portHelper = Join-Path $RepoRoot 'tools\get_backend_port.ps1'
+$ApiPort = 0
+if (Test-Path $portHelper) { try { $ApiPort = [int](& $portHelper) } catch {} }
+if (-not $ApiPort -or $ApiPort -eq 0) { $ApiPort = 8000 }
 $NssmUrl = 'https://nssm.cc/release/nssm-2.24.zip'
 $NssmDir = 'C:\ProgramData\nssm'
 $NssmExe = Join-Path $NssmDir 'nssm.exe'

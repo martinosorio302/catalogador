@@ -44,7 +44,6 @@ DATA_DIR=C:\Users\USER\Desktop\Catalogador\data
 PYTHONUNBUFFERED=1
 PYTHONUTF8=1
 UVICORN_HOST=127.0.0.1
-UVICORN_PORT=8000
 CATALOGADOR_REPO=C:\Users\USER\Desktop\Catalogador
 CATALOGADOR_VENV=C:\ProgramData\Catalogador\python_api\venv
 '@
@@ -96,7 +95,13 @@ try {
 
 # As a fallback, forcefully set AppParameters to a known-good command that binds to 127.0.0.1
 try {
-    $forceParams = "-m uvicorn api.main:app --host 127.0.0.1 --port 8000 --log-level info"
+    # Prefer canonical helper for port (fallback to 8000)
+    $portHelper = Join-Path (Split-Path -Parent $MyInvocation.MyCommand.Path) 'get_backend_port.ps1'
+    $p = 0
+    if (Test-Path $portHelper) { try { $p = [int](& $portHelper) } catch {} }
+    if (-not $p -or $p -eq 0) { $p = 8000 }
+    $new = $new -replace 'UVICORN_HOST=127.0.0.1','UVICORN_HOST=127.0.0.1`nUVICORN_PORT=' + $p
+    $forceParams = "-m uvicorn api.main:app --host 127.0.0.1 --port $p --log-level info"
     Write-Host 'Force-setting AppParameters to:' $forceParams
     & $nssm set $ServiceName AppParameters $forceParams
     if ($LASTEXITCODE -ne 0) { Write-Warning "nssm set AppParameters (force) returned exit code $LASTEXITCODE" }

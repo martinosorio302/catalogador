@@ -1,4 +1,4 @@
-<#
+; <#
 Auto redeploy script for Catalogador API
 
 Usage (dry-run, safe):
@@ -40,6 +40,12 @@ $ServiceName = 'Catalogador-PythonAPI'
 $ProgramDataRoot = 'C:\ProgramData\Catalogador\python_api'
 $ScriptDir = Split-Path -Parent $MyInvocation.MyCommand.Path
 $RepoRoot = Split-Path -Parent $ScriptDir
+
+# Resolve API port using canonical helper if present (fallback to 8000)
+$portHelper = Join-Path $RepoRoot 'tools\get_backend_port.ps1'
+$ApiPort = 0
+if (Test-Path $portHelper) { try { $ApiPort = [int](& $portHelper) } catch {} }
+if (-not $ApiPort -or $ApiPort -eq 0) { $ApiPort = 8000 }
 
 $RollbackScript = Join-Path (Split-Path $MyInvocation.MyCommand.Path) 'rollback_catalogador.ps1'
 
@@ -160,7 +166,7 @@ if ($Force.IsPresent) {
 # 6) Configure NSSM service
 Write-Host "\nStep 6: Configure NSSM service" -ForegroundColor Cyan
 $nssmPath = 'nssm'
-$appParams = "-m uvicorn api.main:app --host 127.0.0.1 --port 8000 --log-level info"
+$appParams = "-m uvicorn api.main:app --host 127.0.0.1 --port $ApiPort --log-level info"
 if ($Force.IsPresent) {
     # Optional: if a NssmUrl and NssmSha256 are provided, download and verify nssm.exe
     if ($NssmUrl -and $NssmSha256) {
@@ -199,7 +205,7 @@ if ($Force.IsPresent) {
     $ok = $false
     for ($i=0; $i -lt 15; $i++) {
         try {
-            $r = Invoke-RestMethod -Uri http://127.0.0.1:8000/health -TimeoutSec 3
+            $r = Invoke-RestMethod -Uri ("http://127.0.0.1:$ApiPort/health") -TimeoutSec 3
             Write-Host "Health response: $($r | ConvertTo-Json -Compress)" -ForegroundColor Green
             $ok = $true; break
         } catch { Start-Sleep -Seconds 1 }
@@ -208,7 +214,7 @@ if ($Force.IsPresent) {
         Write-Error "Service did not respond on /health after start."; exit 1
     }
 } else {
-    Write-Host "Would start the NSSM service and poll http://127.0.0.1:8000/health" -ForegroundColor Yellow
+    Write-Host "Would start the NSSM service and poll http://127.0.0.1:$ApiPort/health" -ForegroundColor Yellow
 }
 
 Write-Host "\nAuto redeploy script completed (dry-run: $(-not $Force.IsPresent))." -ForegroundColor Cyan

@@ -5,8 +5,15 @@ param(
     [string]$PythonPath = "C:\Python312\python.exe",
     [string]$InstallPath = "$PSScriptRoot\..",
     [string]$ServiceName = "CatalogadorAPI",
-    [int]$Port = 8000
+    [int]$Port = 0
 )
+
+# If tools/get_backend_port.ps1 exists, prefer its value for the default port
+$helper = Join-Path (Split-Path -Parent $MyInvocation.MyCommand.Path) 'get_backend_port.ps1'
+if (Test-Path $helper) {
+    try { $helperPort = [int](& $helper); if ($helperPort) { $Port = $helperPort } } catch {}
+}
+if (-not $Port -or $Port -eq 0) { $Port = 8000 }
 
 Write-Host "======================================"
 Write-Host "Catalogador API - Service Installation"

@@ -1,9 +1,7 @@
 <#
-Enable service autostart and delayed auto-start for Catalogador-PythonAPI.
-Requires Administrator.
-
-Usage (as Admin):
-  .\tools\enable_service_autostart.ps1
+Archive copy: enable_service_autostart.ps1.bak
+Moved to tools/archive on 2025-11-12 by maintenance script.
+Original purpose: Enable service autostart and delayed auto-start for Catalogador-PythonAPI.
 #>
 
 function Require-Admin {
