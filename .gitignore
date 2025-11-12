@@ -1,1 +1,42 @@
+# Node
 node_modules
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+venv/
+.venv/
+env/
+ENV/
+*.egg-info/
+dist/
+build/
+*.egg
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Build artifacts
+_build_logs/
+dist-electron/
+
+# Pytest
+.pytest_cache/
+.pytest_work/
+.pytest_tmp/
+
+# Temporary files
+*.tmp
+*.log
+*.lock
