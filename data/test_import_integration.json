@@ -1,14 +1,3 @@
-[
-  {
-    "fondo": "A",
-    "codigo": "X/01",
-    "titulo": "T1",
-    "valor": "TEMPORAL",
-    "retencion": {
-      "gestion": 1,
-      "periferico": 0,
-      "central": 0,
-      "total": 0
-    }
-  }
-]
+version https://git-lfs.github.com/spec/v1
+oid sha256:81d3322dffac022b8b14d46ef5dc7ad4e4784d0085d7515fac17c40e9b642a73
+size 201
