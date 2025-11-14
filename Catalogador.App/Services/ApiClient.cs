@@ -1,4 +1,5 @@
 using System;
+using System.IO;
 using System.Net.Http;
 using System.Net.Http.Json;
 using System.Threading.Tasks;
@@ -14,17 +15,58 @@ namespace CatalogadorEsSalud.Services
         private static readonly Lazy<ApiClient> _instance = new(() => new ApiClient());
         public static ApiClient Instance => _instance.Value;
 
-        private readonly HttpClient _httpClient;
-        private readonly string _baseUrl;
+    private readonly HttpClient _httpClient;
+    public string BaseUrl { get; }
 
         private ApiClient()
         {
-            _baseUrl = "http://127.0.0.1:8000";
+            // Determine backend URL from environment or runtime/backend_port.txt (fallback to 8000)
+            var port = FindBackendPort() ?? "8000";
+            BaseUrl = $"http://127.0.0.1:{port}";
+
             _httpClient = new HttpClient
             {
-                BaseAddress = new Uri(_baseUrl),
+                BaseAddress = new Uri(BaseUrl),
                 Timeout = TimeSpan.FromSeconds(30)
             };
+
+            Helpers.SimpleLogger.Instance.Info($"ApiClient initialized with base URL: {BaseUrl}");
+        }
+
+        private string? FindBackendPort()
+        {
+            // 1. Environment variables (explicit override)
+            var env = Environment.GetEnvironmentVariable("CATALOGADOR_BACKEND_PORT")
+                      ?? Environment.GetEnvironmentVariable("UVICORN_PORT");
+            if (!string.IsNullOrWhiteSpace(env)) return env.Trim();
+
+            // 2. Look for runtime/backend_port.txt walking up from a few likely roots
+            string[] roots = new[] { AppDomain.CurrentDomain.BaseDirectory, Directory.GetCurrentDirectory() };
+            foreach (var root in roots)
+            {
+                var dir = new DirectoryInfo(root);
+                for (int depth = 0; depth < 5 && dir != null; depth++)
+                {
+                    var candidate = Path.Combine(dir.FullName, "runtime", "backend_port.txt");
+                    try
+                    {
+                        if (File.Exists(candidate))
+                        {
+                            var read = File.ReadAllText(candidate).Trim();
+                            if (!string.IsNullOrWhiteSpace(read)) return read;
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        // ignore read errors but log
+                        Helpers.SimpleLogger.Instance.Warn($"Could not read backend_port at {candidate}: {ex.Message}");
+                    }
+
+                    dir = dir.Parent;
+                }
+            }
+
+            return null;
         }
 
         /// <summary>

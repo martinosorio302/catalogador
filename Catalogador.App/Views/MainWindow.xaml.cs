@@ -39,8 +39,10 @@ namespace CatalogadorEsSalud.Views
                         statusIndicator.Fill = new SolidColorBrush(Colors.Red);
                         txtApiStatus.Text = "API: No disponible";
                         txtStatus.Text = "Error: No se puede conectar al servidor API";
+                        // Use dynamic base URL detected by ApiClient
+                        var backendUrl = Services.ApiClient.Instance.BaseUrl ?? "http://127.0.0.1:8000";
                         MessageBox.Show(
-                            "No se puede conectar al servidor API en http://127.0.0.1:8000\n\n" +
+                            $"No se puede conectar al servidor API en {backendUrl}\n\n" +
                             "Por favor, asegúrese de que el servicio de backend esté ejecutándose.",
                             "Error de Conexión",
                             MessageBoxButton.OK,

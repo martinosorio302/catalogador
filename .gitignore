@@ -1,93 +1,34 @@
-# Node.js dependencies
-node_modules/
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-package-lock.json.bak
-
 # Python
-__pycache__/
+__pycache__/ 
 *.py[cod]
 *$py.class
-*.so
-.Python
-*.egg-info/
-dist/
-build/
-*.egg
-.pytest_cache/
-.pytest_work/
-.mypy_cache/
-.ruff_cache/
-.coverage
-.coverage.*
-htmlcov/
-*.cover
-.hypothesis/
 
 # Virtual environments
-.venv/
 venv/
-ENV/
+.venv/
 env/
+ENV/
 
-# IDE
-.vscode-server/
-.vscode-test/
+# Pytest temp dirs
+.pytest_tmp/
+.pytest_work/
+
+# Editor / OS
+.vscode/
 *.swp
-*.swo
-*~
-.DS_Store
+Thumbs.db
+desktop.ini
 
-# Build outputs
-dist-electron/
+# Build / packaging
 dist/
 build/
-*.tsbuildinfo
+*.egg-info/
 
 # Logs
-*.log
 logs/
-_build_logs/
+*.log
 
-# Temporary files
-temp_*.json
-*.tmp
-*.bak
-.cache/
-
-# OS files
-Thumbs.db
-.DS_Store
-
-# Electron specific
-out/
-app.asar
-
-# Data directories (optional - uncomment if needed)
-# data/
-# reports/
-
-# Test outputs
-.pytest_work/
-test-results/
-coverage/
-
-# Environment variables
-.env
-.env.local
-.env.*.local
-
-# InnoSetup Installer
-installer/output/
-installer/*.exe
-
-# Deprecated directories (removed)
-frontend/
-src/
-electron/
-backend/
-pr_bundle/
-pr_bundle_v2/
-app-desktop/
-dist-electron/
+# Git LFS pointers are tracked separately
+node_modules
+node_modules
+node_modules

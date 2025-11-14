@@ -1,34 +1,3 @@
-{
-  "TRD_TABLA": [
-    {"code": "CODI/01", "titulo": "ACTAS DE SESIONES", "valor": "Permanente", "ag": 2, "ap": 0, "oaa": 28, "total": 30, "asunto": "CONSEJO DIRECTIVO"},
-    {"code": "CODI/02", "titulo": "CORRESPONDENCIA", "valor": "Temporal", "ag": 2, "ap": 0, "oaa": 6, "total": 8, "asunto": "CONSEJO DIRECTIVO"},
-    {"code": "PREJ/01", "titulo": "RESOLUCIONES", "valor": "Permanente", "ag": 2, "ap": 0, "oaa": 28, "total": 30, "asunto": "PRESIDENCIA EJECUTIVA"},
-    {"code": "PREJ/02", "titulo": "PRONUNCIAMIENTOS", "valor": "Permanente", "ag": 2, "ap": 0, "oaa": 28, "total": 30, "asunto": "PRESIDENCIA EJECUTIVA"},
-    {"code": "PREJ/03", "titulo": "CORRESPONDENCIA", "valor": "Temporal", "ag": 2, "ap": 0, "oaa": 6, "total": 8, "asunto": "PRESIDENCIA EJECUTIVA"},
-    {"code": "COIN/01", "titulo": "RESOLUCIONES JEFATURALES", "valor": "Permanente", "ag": 2, "ap": 8, "oaa": 20, "total": 30, "asunto": "CONTROL INSTITUCIONAL"},
-    {"code": "COIN/02", "titulo": "ACCIONES DE CONTROL", "valor": "Temporal", "ag": 2, "ap": 8, "oaa": 5, "total": 15, "asunto": "CONTROL INSTITUCIONAL"},
-    {"code": "COIN/03", "titulo": "ACTIVIDADES DE CONTROL", "valor": "Temporal", "ag": 2, "ap": 8, "oaa": 5, "total": 15, "asunto": "CONTROL INSTITUCIONAL"},
-    {"code": "COIN/04", "titulo": "CORRESPONDENCIA", "valor": "Temporal", "ag": 2, "ap": 8, "oaa": 2, "total": 12, "asunto": "CONTROL INSTITUCIONAL"}
-  ],
-  "INVENTARIO_DESCRIPCION": {
-    "CODI/01": "Actas y acuerdos del Consejo Directivo (con antecedentes).",
-    "CODI/02": "Correspondencia del Consejo Directivo (cartas, oficios, informes, etc.).",
-    "PREJ/01": "Resoluciones de la Presidencia Ejecutiva (con antecedentes y notificación).",
-    "PREJ/02": "Pronunciamientos sobre bases y observaciones de procesos de selección.",
-    "PREJ/03": "Correspondencia de la Presidencia Ejecutiva.",
-    "COIN/01": "Resoluciones jefaturales del Órgano de Control Institucional.",
-    "COIN/02": "Acciones de control posterior (estados fin., presupuestarios, gestión, etc.).",
-    "COCE/01": "Expedientes de quejas y denuncias contra servidores públicos."
-  },
-  "INDICE_TOKENS": [
-    {"tokens": ["ACTAS", "CONSEJO DIRECTIVO"], "codes": ["CODI/01"]},
-    {"tokens": ["CORRESPONDENCIA", "CONSEJO DIRECTIVO"], "codes": ["CODI/02"]},
-    {"tokens": ["RESOLUCION", "PRESIDENCIA EJECUTIVA"], "codes": ["PREJ/01"]},
-    {"tokens": ["PRONUNCIAMIENTO", "PRESIDENCIA EJECUTIVA"], "codes": ["PREJ/02"]},
-    {"tokens": ["CORRESPONDENCIA", "PRESIDENCIA EJECUTIVA"], "codes": ["PREJ/03"]},
-    {"tokens": ["ACCIONES DE CONTROL"], "codes": ["COIN/02"]},
-    {"tokens": ["ACTIVIDADES DE CONTROL"], "codes": ["COIN/03"]},
-    {"tokens": ["QUEJAS", "DENUNCIAS"], "codes": ["COCE/01", "COD1/01"]},
-    {"tokens": ["HOJAS", "EVALUACIONES"], "codes": ["COCE/02", "COD1/02"]}
-  ]
-}
+version https://git-lfs.github.com/spec/v1
+oid sha256:827c8e2eb63e4c82141e67af405b5adf7ac293e96335d4a8ac5253f0b6536092
+size 2815

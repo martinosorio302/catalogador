@@ -1,7 +1,5 @@
 ## Catalogador — Entorno de trabajo Git (Guía rápida en español)
 
-**🆕 NOVEDAD: Integración completa con Visual Studio Code** - Ver [VSCODE_SETUP.md](VSCODE_SETUP.md) para una guía detallada de configuración del entorno de desarrollo.
-
 Este README explica cómo preparar un entorno de trabajo en Git para este
 repositorio en Windows (PowerShell), incluyendo Git LFS, entorno Python (opcional
 venv en ProgramData), ejecución de pruebas, creación de ramas y cómo generar
@@ -9,7 +7,6 @@ un Pull Request. Está pensado para desarrolladores que van a mantener,
 probar y desplegar el API localmente.
 
 Contenido rápido
-- **[Integración con VSCode](VSCODE_SETUP.md)** ⭐ RECOMENDADO
 - Requisitos
 - Clonar el repositorio (SSH/HTTPS)
 - Git LFS: instalación y uso
@@ -21,33 +18,6 @@ Contenido rápido
 - Crear PR (GitHub CLI / web / API via PowerShell)
 - Despliegue en Windows (scripts NSSM en `tools\`)
 - Problemas comunes y soluciones
-
-## Inicio Rápido para Desarrolladores (VSCode)
-
-Si usas Visual Studio Code, la forma más rápida de comenzar es:
-
-1. **Clonar el repositorio:**
-   ```bash
-   git clone https://github.com/martinosorio302/catalogador.git
-   cd catalogador
-   ```
-
-2. **Abrir en VSCode:**
-   ```bash
-   code .
-   ```
-
-3. **Instalar extensiones recomendadas:** VSCode te preguntará automáticamente
-
-4. **Configurar entorno Python:**
-   - Windows: `.venv\Scripts\Activate.ps1`
-   - Linux/macOS: `source .venv/bin/activate`
-
-5. **Ejecutar tarea de instalación:** `Ctrl+Shift+P` → "Tasks: Run Task" → "Full Build: Install All Dependencies"
-
-6. **¡Listo para desarrollar!** Ver [VSCODE_SETUP.md](VSCODE_SETUP.md) para más detalles.
-
----
 
 Requisitos previos
 - Git (2.30+ recomendado)

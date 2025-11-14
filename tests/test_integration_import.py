@@ -34,18 +34,22 @@ def test_import_retencion_integration(tmp_path):
     port = _find_free_port()
     url = f"http://127.0.0.1:{port}"
 
-    uvicorn_proc = subprocess.Popen([
-        sys.executable,
-        "-m",
-        "uvicorn",
-        "api.main:app",
-        "--host",
-        "127.0.0.1",
-        "--port",
-        str(port),
-        "--log-level",
-        "warning",
-    ], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+    uvicorn_proc = subprocess.Popen(
+        [
+            sys.executable,
+            "-m",
+            "uvicorn",
+            "api.main:app",
+            "--host",
+            "127.0.0.1",
+            "--port",
+            str(port),
+            "--log-level",
+            "warning",
+        ],
+        stdout=subprocess.DEVNULL,
+        stderr=subprocess.DEVNULL,
+    )
 
     try:
         assert wait_for_health(url + "/health", timeout=15), "uvicorn did not become healthy"
@@ -53,15 +57,29 @@ def test_import_retencion_integration(tmp_path):
         # create a small source JSON file that import_retencion can read
         src = tmp_path / "src.json"
         rows = [
-            {"fondo": "A", "codigo": "X/01", "titulo": "T1", "valor": "TEMPORAL", "retencion_gestion": 1}
+            {
+                "fondo": "A",
+                "codigo": "X/01",
+                "titulo": "T1",
+                "valor": "TEMPORAL",
+                "retencion_gestion": 1,
+            }
         ]
         src.write_text(json.dumps(rows, ensure_ascii=False), encoding="utf-8")
 
         # call the import_retencion script as a module so it performs write + reload
         args = [
-            sys.executable, "-m", "tools.import_retencion", "--src", str(src),
-            "--dest", "api/data/test_import_integration.json",
-            "--reload-host", "127.0.0.1", "--reload-port", str(port),
+            sys.executable,
+            "-m",
+            "tools.import_retencion",
+            "--src",
+            str(src),
+            "--dest",
+            "api/data/test_import_integration.json",
+            "--reload-host",
+            "127.0.0.1",
+            "--reload-port",
+            str(port),
         ]
         subprocess.run(args, check=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
 

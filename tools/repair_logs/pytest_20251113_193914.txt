@@ -1,0 +1,64 @@
+
+=================================== ERRORS ====================================
+________ ERROR collecting tests/test_import_retencion_transactional.py ________
+ImportError while importing test module 'C:\Users\USER\Desktop\Catalogador\tests\test_import_retencion_transactional.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+..\..\AppData\Local\Programs\Python\Python312\Lib\importlib\__init__.py:90: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests\test_import_retencion_transactional.py:1: in <module>
+    from tools import import_retencion
+tools\import_retencion.py:6: in <module>
+    from catalogador.tools.import_retencion import main
+E   ModuleNotFoundError: No module named 'catalogador.tools.import_retencion'
+______________ ERROR collecting tests/test_import_write_dest.py _______________
+ImportError while importing test module 'C:\Users\USER\Desktop\Catalogador\tests\test_import_write_dest.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+..\..\AppData\Local\Programs\Python\Python312\Lib\importlib\__init__.py:90: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests\test_import_write_dest.py:4: in <module>
+    from tools import import_retencion as ir
+tools\import_retencion.py:6: in <module>
+    from catalogador.tools.import_retencion import main
+E   ModuleNotFoundError: No module named 'catalogador.tools.import_retencion'
+__________ ERROR collecting tests/test_import_write_dest_unittest.py __________
+ImportError while importing test module 'C:\Users\USER\Desktop\Catalogador\tests\test_import_write_dest_unittest.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+..\..\AppData\Local\Programs\Python\Python312\Lib\importlib\__init__.py:90: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests\test_import_write_dest_unittest.py:5: in <module>
+    from tools import import_retencion as ir
+tools\import_retencion.py:6: in <module>
+    from catalogador.tools.import_retencion import main
+E   ModuleNotFoundError: No module named 'catalogador.tools.import_retencion'
+============================== warnings summary ===============================
+api\main.py:20
+  C:\Users\USER\Desktop\Catalogador\api\main.py:20: DeprecationWarning: 
+          on_event is deprecated, use lifespan event handlers instead.
+  
+          Read more about it in the
+          [FastAPI docs for Lifespan Events](https://fastapi.tiangolo.com/advanced/events/).
+          
+    @app.on_event("startup")
+
+.venv\Lib\site-packages\fastapi\applications.py:4575
+  C:\Users\USER\Desktop\Catalogador\.venv\Lib\site-packages\fastapi\applications.py:4575: DeprecationWarning: 
+          on_event is deprecated, use lifespan event handlers instead.
+  
+          Read more about it in the
+          [FastAPI docs for Lifespan Events](https://fastapi.tiangolo.com/advanced/events/).
+          
+    return self.router.on_event(event_type)
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ===========================
+ERROR tests/test_import_retencion_transactional.py
+ERROR tests/test_import_write_dest.py
+ERROR tests/test_import_write_dest_unittest.py
+!!!!!!!!!!!!!!!!!!! Interrupted: 3 errors during collection !!!!!!!!!!!!!!!!!!!
+2 warnings, 3 errors in 39.47s
