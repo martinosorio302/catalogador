@@ -1,6 +1,36 @@
-## Catalogador — Entorno de trabajo Git (Guía rápida en español)
+# 📁 Catalogador EsSalud
 
-Este README explica cómo preparar un entorno de trabajo en Git para este
+Sistema de catalogación de archivos para EsSalud con interfaz de escritorio.
+
+## 🚀 Inicio Rápido (Para Usuarios)
+
+¿Solo quieres ejecutar la aplicación? ¡Es muy fácil!
+
+### Windows
+1. Clona el repositorio:
+   ```cmd
+   git clone https://github.com/martinosorio302/catalogador.git
+   cd catalogador
+   ```
+
+2. **Doble clic** en `LAUNCH_CATALOGADOR.bat` 
+
+¡Eso es todo! La aplicación se abrirá automáticamente en tu navegador.
+
+### Linux / macOS
+```bash
+git clone https://github.com/martinosorio302/catalogador.git
+cd catalogador
+./LAUNCH_CATALOGADOR.sh
+```
+
+📖 **Más información**: Ver [LAUNCHER_README.md](LAUNCHER_README.md) para crear accesos directos, iconos y más.
+
+---
+
+## 🛠️ Catalogador — Entorno de trabajo Git (Guía para desarrolladores)
+
+Esta sección explica cómo preparar un entorno de trabajo en Git para este
 repositorio en Windows (PowerShell), incluyendo Git LFS, entorno Python (opcional
 venv en ProgramData), ejecución de pruebas, creación de ramas y cómo generar
 un Pull Request. Está pensado para desarrolladores que van a mantener,
