@@ -12,11 +12,11 @@ export default function App(){
 
   function runSimulation(){
     // Try calling backend API first; fall back to local simulation if it fails
-    const url = `${API_BASE.replace(/\/+$/,'')}/trd/classify`;
+    const url = `${API_BASE.replace(/\/+$/,'')}/classify`;
     fetch(url, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ text: 'dummy content for simulation' })
+      body: JSON.stringify({ titulo: 'Acta de reunión', serie: 'Actas', asuntoUnidad: 'Recursos Humanos' })
     }).then(async res => {
       if (!res.ok) throw new Error('API error ' + res.status);
       const json = await res.json();
