@@ -1,9 +1,0 @@
-README.md
-setup.py
-catalogador.egg-info/PKG-INFO
-catalogador.egg-info/SOURCES.txt
-catalogador.egg-info/dependency_links.txt
-catalogador.egg-info/top_level.txt
-tests/test_import_write_dest.py
-tests/test_import_write_dest_unittest.py
-tests/test_trd.py

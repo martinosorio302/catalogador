@@ -1,13 +1,3 @@
-{
-  "compilerOptions": {
-    "target": "ES2020",
-    "lib": ["ES2020", "DOM"],
-    "jsx": "react-jsx",
-    "module": "ESNext",
-    "moduleResolution": "Bundler",
-    "strict": true,
-    "baseUrl": ".",
-    "paths": { "@/*": ["./src/*"] }
-  },
-  "include": ["src", "vite.config.ts"]
-}
+version https://git-lfs.github.com/spec/v1
+oid sha256:543e9ccec813ee4dd5f1b54433b90955a9fe5e22592ec2158d8360a3cd8e1728
+size 284
