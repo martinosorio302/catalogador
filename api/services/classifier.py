@@ -1,4 +1,3 @@
-from pathlib import Path
 from engine import trd
 
 def classify_document_text(text: str, asuntoUnidad: str | None = None, titulo: str | None = None, productor: str | None = None):
