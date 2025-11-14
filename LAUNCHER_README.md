@@ -2,6 +2,41 @@
 
 Este repositorio incluye scripts de lanzamiento automático para ejecutar la aplicación **Catalogador EsSalud** directamente desde Git como un programa totalmente operativo.
 
+## ⚠️ IMPORTANTE: Cómo Ejecutar Correctamente
+
+### ❌ NO FUNCIONA (Error común):
+```cmd
+C:\Users\USER\catalogador>LAUNCH_CATALOGADOR.bat
+"LAUNCH_CATALOGADOR.bat" no se reconoce como un comando interno o externo...
+```
+
+### ✅ FUNCIONA (Método correcto):
+
+#### Opción 1: Doble Clic (MÁS FÁCIL) ⭐
+1. Abre el **Explorador de Windows**
+2. Navega a la carpeta `catalogador`
+3. **Doble clic** en:
+   - `START.bat` (recomendado)
+   - O `LAUNCH_CATALOGADOR.bat`
+
+#### Opción 2: Desde CMD (con prefijo correcto)
+```cmd
+C:\Users\USER\catalogador>.\START.bat
+```
+O:
+```cmd
+C:\Users\USER\catalogador>.\LAUNCH_CATALOGADOR.bat
+```
+
+**Nota:** El prefijo `.\` es necesario en Windows CMD.
+
+#### Opción 3: Crear Acceso Directo en el Escritorio
+Doble clic en `CREATE_DESKTOP_SHORTCUT.bat` para crear un icono en tu escritorio.
+
+📖 **¿Aún tienes problemas?** Ver [QUICK_START.md](QUICK_START.md) para soluciones detalladas.
+
+---
+
 ## 📋 Requisitos Previos
 
 Antes de ejecutar la aplicación, asegúrate de tener instalados:

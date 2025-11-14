@@ -6,16 +6,26 @@ Sistema de catalogación de archivos para EsSalud con interfaz de escritorio.
 
 ¿Solo quieres ejecutar la aplicación? ¡Es muy fácil!
 
-### Windows
+### Windows (Recomendado)
 1. Clona el repositorio:
    ```cmd
    git clone https://github.com/martinosorio302/catalogador.git
    cd catalogador
    ```
 
-2. **Doble clic** en `LAUNCH_CATALOGADOR.bat` 
+2. **Abre el Explorador de Windows** y navega a la carpeta `catalogador`
+
+3. **Doble clic** en `START.bat` (o `LAUNCH_CATALOGADOR.bat`)
 
 ¡Eso es todo! La aplicación se abrirá automáticamente en tu navegador.
+
+#### Alternativa desde CMD:
+```cmd
+cd catalogador
+.\START.bat
+```
+
+**⚠️ Nota importante:** Si ejecutas desde CMD, debes usar `.\` antes del nombre del archivo.
 
 ### Linux / macOS
 ```bash
@@ -23,6 +33,14 @@ git clone https://github.com/martinosorio302/catalogador.git
 cd catalogador
 ./LAUNCH_CATALOGADOR.sh
 ```
+
+### 🆘 ¿Problemas al Iniciar?
+
+Si ves el error: `"LAUNCH_CATALOGADOR.bat" no se reconoce como un comando...`
+
+👉 **Ver [QUICK_START.md](QUICK_START.md)** para soluciones detalladas.
+
+**Solución rápida:** Usa doble clic en el archivo en lugar de ejecutarlo desde CMD, o asegúrate de estar en el directorio correcto y usa `.\START.bat`
 
 📖 **Más información**: Ver [LAUNCHER_README.md](LAUNCHER_README.md) para crear accesos directos, iconos y más.
 
