@@ -13,17 +13,18 @@ with the backend and to avoid PowerShell 5.1 parsing issues.
 """
 
 from __future__ import annotations
+
 import argparse
-import json
 import csv
 import hashlib
+import json
 import os
 import re
 import shutil
 import subprocess
 import sys
 from pathlib import Path
-from typing import List, Dict, Any
+from typing import Any
 
 try:
     import portalocker
@@ -69,7 +70,7 @@ def run_pdftotext(pdf: Path, out_txt: Path) -> None:
             str(pdf),
             str(out_txt),
         ]
-        proc = subprocess.run(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        proc = subprocess.run(cmd, capture_output=True)
         if proc.returncode != 0:
             raise RuntimeError(
                 f"pdftotext failed: {proc.returncode} {proc.stderr.decode('utf-8', errors='replace')}"
@@ -98,7 +99,7 @@ def run_pdftotext(pdf: Path, out_txt: Path) -> None:
             outfh.write("\n")
 
 
-def resolve_valorizacion(valor_serie: str, ag: int, ap: int, oaa: int) -> Dict[str, Any]:
+def resolve_valorizacion(valor_serie: str, ag: int, ap: int, oaa: int) -> dict[str, Any]:
     total = ag + ap + oaa
     if valor_serie.upper() == "PERMANENTE":
         return {
@@ -135,8 +136,8 @@ RX_FILA = re.compile(
 )
 
 
-def parse_layout_text(txt_path: Path) -> List[Dict[str, Any]]:
-    parsed: List[Dict[str, Any]] = []
+def parse_layout_text(txt_path: Path) -> list[dict[str, Any]]:
+    parsed: list[dict[str, Any]] = []
     state = {
         "sector": "MINISTERIO DE TRABAJO Y PROMOCION DEL EMPLEO",
         "entidad": "SEGURO SOCIAL DE SALUD (EsSalud)",
@@ -148,7 +149,7 @@ def parse_layout_text(txt_path: Path) -> List[Dict[str, Any]]:
         lines = [line.rstrip("\n") for line in fh]
 
     within_table = False
-    for i, line in enumerate(lines, start=1):
+    for _i, line in enumerate(lines, start=1):
         trim = line.strip()
         if re.match(r"^\s*\d+\s+de\s+\d+\s*$", trim):
             state["pagina"] += 1
@@ -232,7 +233,7 @@ def parse_layout_text(txt_path: Path) -> List[Dict[str, Any]]:
     return parsed
 
 
-def export_artifacts(parsed: List[Dict[str, Any]], pdf_path: Path, outdir: Path) -> None:
+def export_artifacts(parsed: list[dict[str, Any]], pdf_path: Path, outdir: Path) -> None:
     data_dir = outdir / "data"
     data_dir.mkdir(parents=True, exist_ok=True)
 
@@ -464,7 +465,7 @@ CREATE INDEX IF NOT EXISTS idx_valor_serie ON series_retencion(valor_serie);
     print(" - Seed JSON :", seedjson_path)
 
 
-def main(argv: List[str] | None = None) -> int:
+def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(
         description="Ingest ANEXO 2 (PCD EsSalud) and produce normalized artifacts"
     )

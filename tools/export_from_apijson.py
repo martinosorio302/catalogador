@@ -6,10 +6,10 @@ Usage example (use forward slashes or double backslashes on Windows):
 """
 
 import argparse
-import json
-from pathlib import Path
 import csv
 import hashlib
+import json
+from pathlib import Path
 
 
 def hash_row(row):
@@ -62,9 +62,7 @@ def write_sql(rows, out: Path, table="retencion"):
     with out.open("w", encoding="utf-8") as f:
         # simple CREATE TABLE (if needed)
         f.write(
-            "CREATE TABLE IF NOT EXISTS {} (fondo TEXT, codigo TEXT, titulo TEXT, valor TEXT, gestion INTEGER, periferico INTEGER, central INTEGER, total INTEGER, observaciones TEXT, hash TEXT);\n\n".format(
-                table
-            )
+            f"CREATE TABLE IF NOT EXISTS {table} (fondo TEXT, codigo TEXT, titulo TEXT, valor TEXT, gestion INTEGER, periferico INTEGER, central INTEGER, total INTEGER, observaciones TEXT, hash TEXT);\n\n"
         )
         f.write("BEGIN TRANSACTION;\n")
         for r in rows:

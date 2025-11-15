@@ -1,4 +1,4 @@
-; <#
+<#
 Auto redeploy script for Catalogador API
 
 Usage (dry-run, safe):
