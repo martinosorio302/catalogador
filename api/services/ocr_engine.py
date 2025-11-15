@@ -1,6 +1,9 @@
+import logging
 import shutil
 import subprocess
 from pathlib import Path
+
+logger = logging.getLogger(__name__)
 
 
 def extract_text_from_pdf(path: Path) -> str:
@@ -18,8 +21,10 @@ def extract_text_from_pdf(path: Path) -> str:
             if text:
                 text_parts.append(text)
         return "\n".join(text_parts)
-    except Exception:
-        pass
+    except ImportError:
+        logger.debug("PyMuPDF not available, falling back to pdftotext")
+    except (OSError, RuntimeError) as e:
+        logger.warning("PyMuPDF failed to extract from %s: %s", path, e)
 
     # Try pdftotext (poppler)
     if shutil.which("pdftotext"):

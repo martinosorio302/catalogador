@@ -58,7 +58,7 @@ def reload_data(request: Request, x_admin_token: str | None = Header(None)):
             "ok": True,
             "counts": result.get("counts", {}),
         }
-    except Exception as e:
+    except (OSError, RuntimeError, KeyError) as e:
         logger.exception("Failed to reload TRD data")
         raise HTTPException(status_code=500, detail=str(e))
 
@@ -158,6 +158,6 @@ def export_inventory():
             headers={"Content-Disposition": ("attachment; filename=inventario_trd.xlsx")},
         )
 
-    except Exception as e:
+    except (KeyError, AttributeError, ValueError, OSError) as e:
         logger.exception("Failed to export inventory")
         raise HTTPException(status_code=500, detail=str(e))

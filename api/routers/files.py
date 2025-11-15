@@ -31,8 +31,8 @@ def extract_text_from_pdf(pdf_path: Path) -> str:
             text_parts.append(page.get_text())
         doc.close()
         return "\n".join(text_parts)
-    except Exception as e:
-        logger.error(f"Failed to extract text from PDF: {e}")
+    except (OSError, RuntimeError) as e:
+        logger.error("Failed to extract text from PDF %s: %s", pdf_path, e)
         return ""
 
 
@@ -89,13 +89,13 @@ async def upload(file: UploadFile = File(...)):
                     fh.close()
                     try:
                         dest.unlink(missing_ok=True)
-                    except Exception:
-                        pass
+                    except OSError as e:
+                        logger.warning("Failed to cleanup oversized file %s: %s", dest, e)
                     raise HTTPException(status_code=413, detail="Uploaded file too large")
                 fh.write(chunk)
     except HTTPException:
         raise
-    except Exception as e:
+    except OSError as e:
         logger.exception("Failed to save upload")
         raise HTTPException(status_code=500, detail=str(e))
 
@@ -122,8 +122,8 @@ async def upload(file: UploadFile = File(...)):
                     )
             else:
                 classification_result["error"] = "No se pudo extraer texto del PDF"
-        except Exception as e:
-            logger.error(f"Classification error: {e}")
+        except (KeyError, AttributeError, ValueError) as e:
+            logger.error("Classification error for %s: %s", safe_name, e)
             classification_result["error"] = str(e)
 
     return {

@@ -83,7 +83,7 @@ def run_pdftotext(pdf: Path, out_txt: Path) -> None:
     # Fallback: use a pure-Python extraction (pdfplumber) if pdftotext is missing
     try:
         import pdfplumber
-    except Exception:
+    except ImportError:
         # Do not attempt to pip-install at runtime in production; instruct user
         raise RuntimeError(
             "pdftotext not found in PATH and pdfplumber is not installed. "
@@ -335,16 +335,16 @@ def export_artifacts(parsed: list[dict[str, Any]], pdf_path: Path, outdir: Path)
                 fh.flush()
                 try:
                     os.fsync(fh.fileno())
-                except Exception:
-                    pass
+                except OSError as e:
+                    logger.warning("fsync failed for %s (non-critical): %s", csv_path, e)
             os.replace(tmp_path, str(csv_path))
             tmp_path = None
         finally:
             if tmp_path and os.path.exists(tmp_path):
                 try:
                     os.remove(tmp_path)
-                except Exception:
-                    pass
+                except OSError as e:
+                    logger.warning("Failed to remove temp file %s: %s", tmp_path, e)
 
     # SQL schema and seed
     sql_schema = """-- retencion_schema.sql
@@ -387,16 +387,16 @@ CREATE INDEX IF NOT EXISTS idx_valor_serie ON series_retencion(valor_serie);
             fh.flush()
             try:
                 os.fsync(fh.fileno())
-            except Exception:
-                pass
+            except OSError as e:
+                logger.warning("fsync failed for %s (non-critical): %s", schema_path, e)
         os.replace(tmp_path, str(schema_path))
         tmp_path = None
     finally:
         if tmp_path and os.path.exists(tmp_path):
             try:
                 os.remove(tmp_path)
-            except Exception:
-                pass
+            except OSError as e:
+                logger.warning("Failed to remove temp file %s: %s", tmp_path, e)
 
     seed_path = data_dir / "retencion_seed.sql"
     fd = None
@@ -434,7 +434,7 @@ CREATE INDEX IF NOT EXISTS idx_valor_serie ON series_retencion(valor_serie);
                     try:
                         int(x)
                         return x
-                    except Exception:
+                    except ValueError:
                         return f"'{x}'"
 
                 vals_sql = ", ".join([q(v) for v in vals])
@@ -445,16 +445,16 @@ CREATE INDEX IF NOT EXISTS idx_valor_serie ON series_retencion(valor_serie);
             fh.flush()
             try:
                 os.fsync(fh.fileno())
-            except Exception:
-                pass
+            except OSError as e:
+                logger.warning("fsync failed for %s (non-critical): %s", seed_path, e)
         os.replace(tmp_path, str(seed_path))
         tmp_path = None
     finally:
         if tmp_path and os.path.exists(tmp_path):
             try:
                 os.remove(tmp_path)
-            except Exception:
-                pass
+            except OSError as e:
+                logger.warning("Failed to remove temp file %s: %s", tmp_path, e)
 
     seedjson_path = data_dir / "series.seed.json"
     seed = {
