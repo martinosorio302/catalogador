@@ -2,6 +2,7 @@
 
 import json
 import unicodedata
+from functools import lru_cache
 from pathlib import Path
 from typing import Any
 
@@ -23,6 +24,11 @@ def reload_trd_data() -> dict:
     Returns a small summary dict with counts and errors (if any).
     """
     global _LOADED, TRD_TABLA, INVENTARIO_DESCRIPCION, INDICE_TOKENS
+
+    # Clear caches when reloading data
+    normaliza.cache_clear()
+    buscar_trd_por_codigo.cache_clear()
+
     summary = {"loaded": False, "errors": None, "counts": {}}
     try:
         if _DATA_FILE.exists():
@@ -103,6 +109,7 @@ INVENTARIO_DESCRIPCION = _get_dict("INVENTARIO_DESCRIPCION", {})
 INDICE_TOKENS = _get_list("INDICE_TOKENS", [])
 
 
+@lru_cache(maxsize=128)
 def normaliza(s: str | None) -> str:
     if not s:
         return ""
@@ -133,6 +140,7 @@ def clasificar_por_tokens(
     return None
 
 
+@lru_cache(maxsize=256)
 def buscar_trd_por_codigo(code: str) -> dict[str, Any] | None:
     if not code:
         return None
