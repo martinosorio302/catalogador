@@ -64,8 +64,22 @@ def reload_data(request: Request, x_admin_token: str | None = Header(None)):
 
 
 @router.get("/export/inventory")
-def export_inventory():
-    """Export TRD inventory as Excel file."""
+def export_inventory() -> StreamingResponse:
+    """Export TRD inventory as Excel (.xlsx) file.
+
+    Returns:
+        StreamingResponse: Excel file with TRD inventory data including:
+            - codigo: TRD code
+            - serie: Document series name
+            - tipo: Document type
+            - plazo: Retention period in years
+            - temporalidad: Temporal classification
+            - destino: Final destination
+
+    Raises:
+        HTTPException 501: If openpyxl is not installed
+        HTTPException 500: If export generation fails
+    """
     if not HAS_OPENPYXL:
         raise HTTPException(
             status_code=501, detail="Excel export not available (openpyxl not installed)"

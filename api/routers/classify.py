@@ -8,7 +8,7 @@ router = APIRouter()
 
 
 @router.post("/classify", response_model=ClassifyResponse)
-def classify(req: ClassifyRequest):
+def classify(req: ClassifyRequest) -> dict:
     # use Pydantic v2 model_dump for compatibility
     payload = req.model_dump()
     out = trd.aplicar_reglas_trd(payload)
@@ -20,7 +20,7 @@ def classify(req: ClassifyRequest):
 
 
 @router.get("/trd-info")
-def get_trd_info():
+def get_trd_info() -> dict:
     """Get TRD table information and statistics."""
     codes = {entry.get("code") for entry in trd.TRD_TABLA if entry.get("code")}
     return {

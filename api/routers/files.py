@@ -135,7 +135,7 @@ async def upload(file: UploadFile = File(...)):
 
 
 @router.get("/documents")
-def list_documents():
+def list_documents() -> dict:
     work = Path(tempfile.gettempdir()) / "catalogador_uploads"
     if not work.exists():
         return {"documents": []}
