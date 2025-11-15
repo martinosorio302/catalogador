@@ -59,13 +59,13 @@ def export_inventory():
             status_code=501,
             detail="Excel export not available (openpyxl not installed)"
         )
-    
+
     try:
         # Create workbook
         wb = openpyxl.Workbook()
         ws = wb.active
         ws.title = "Inventario TRD"
-        
+
         # Headers
         headers = [
             "Código",
@@ -79,25 +79,25 @@ def export_inventory():
             "OAA",
             "Total"
         ]
-        
+
         # Style headers
         header_fill = PatternFill(
             start_color="366092", end_color="366092", fill_type="solid"
         )
         header_font = Font(bold=True, color="FFFFFF")
-        
+
         for col_num, header in enumerate(headers, 1):
             cell = ws.cell(row=1, column=col_num)
             cell.value = header
             cell.fill = header_fill
             cell.font = header_font
-        
+
         # Data rows
         for row_num, entry in enumerate(trd.TRD_TABLA, 2):
             ws.cell(row=row_num, column=1, value=entry.get("code", ""))
             ws.cell(row=row_num, column=2, value=entry.get("titulo", ""))
             ws.cell(row=row_num, column=3, value=entry.get("asunto", ""))
-            
+
             # Parse plazo from valor
             valor = entry.get("valor", "")
             if "años" in valor.lower():
@@ -108,20 +108,20 @@ def export_inventory():
                     ws.cell(row=row_num, column=4, value=valor)
             else:
                 ws.cell(row=row_num, column=4, value=valor)
-            
+
             # Temporalidad based on valor
             if "temporal" in valor.lower():
                 temporalidad = "Temporal"
             else:
                 temporalidad = "Permanente"
             ws.cell(row=row_num, column=5, value=temporalidad)
-            
+
             ws.cell(row=row_num, column=6, value=entry.get("destino", ""))
             ws.cell(row=row_num, column=7, value=entry.get("ag", ""))
             ws.cell(row=row_num, column=8, value=entry.get("ap", ""))
             ws.cell(row=row_num, column=9, value=entry.get("oaa", ""))
             ws.cell(row=row_num, column=10, value=entry.get("total", ""))
-        
+
         # Adjust column widths
         for column in ws.columns:
             max_length = 0
@@ -134,14 +134,14 @@ def export_inventory():
                     pass
             adjusted_width = min(max_length + 2, 50)
             ws.column_dimensions[column_letter].width = adjusted_width
-        
+
         # Save to BytesIO
         output = BytesIO()
         wb.save(output)
         output.seek(0)
-        
+
         logger.info("Inventory exported: %d entries", len(trd.TRD_TABLA))
-        
+
         mime_type = (
             "application/vnd.openxmlformats-officedocument."
             "spreadsheetml.sheet"
@@ -155,7 +155,7 @@ def export_inventory():
                 )
             }
         )
-    
+
     except Exception as e:
         logger.exception("Failed to export inventory")
         raise HTTPException(status_code=500, detail=str(e))

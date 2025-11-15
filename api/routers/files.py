@@ -22,7 +22,7 @@ def extract_text_from_pdf(pdf_path: Path) -> str:
     """Extract text from PDF using PyMuPDF."""
     if not HAS_PYMUPDF:
         return ""
-    
+
     try:
         doc = fitz.open(str(pdf_path))
         text_parts = []
@@ -74,7 +74,7 @@ async def upload(file: UploadFile = File(...)):
     except Exception as e:
         logger.exception("Failed to save upload")
         raise HTTPException(status_code=500, detail=str(e))
-    
+
     # Extract text from PDF and classify
     classification_result = {"extracted": False}
     if safe_name.lower().endswith(".pdf"):
@@ -89,7 +89,7 @@ async def upload(file: UploadFile = File(...)):
                 classification_result = trd.aplicar_reglas_trd(payload)
                 classification_result["extracted"] = True
                 classification_result["text_length"] = len(extracted_text)
-                
+
                 # Add inventory description if code found
                 code = classification_result.get("code")
                 if code:
@@ -99,7 +99,7 @@ async def upload(file: UploadFile = File(...)):
         except Exception as e:
             logger.error(f"Classification error: {e}")
             classification_result["error"] = str(e)
-    
+
     return {
         "saved": str(dest),
         "filename": safe_name,
