@@ -1,5 +1,4 @@
 from pathlib import Path
-from typing import Dict
 
 
 def extract_metadata(path: Path) -> dict[str, str]:
