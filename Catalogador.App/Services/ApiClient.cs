@@ -3,6 +3,7 @@ using System.IO;
 using System.Net.Http;
 using System.Text.Json;
 using System.Threading.Tasks;
+using CatalogadorEsSalud.Models;
 
 namespace CatalogadorEsSalud.Services
 {
@@ -44,14 +45,73 @@ namespace CatalogadorEsSalud.Services
             }
         }
 
+        private string LoadBackendUrlFromConfig()
+        {
+            // Try to load from centralized config/backend.config.json
+            // Priority order:
+            // 1. Environment variable CATALOGADOR_BACKEND_PORT
+            // 2. config/backend.config.json
+            // 3. Hardcoded fallback
+            
+            // Check environment variable first
+            var envPort = Environment.GetEnvironmentVariable("CATALOGADOR_BACKEND_PORT");
+            if (!string.IsNullOrEmpty(envPort) && int.TryParse(envPort, out var port))
+            {
+                Helpers.SimpleLogger.Instance.Info($"Using backend port from environment: {port}");
+                return $"http://127.0.0.1:{port}";
+            }
+            
+            // Try to load from config file
+            try
+            {
+                var baseDir = AppDomain.CurrentDomain.BaseDirectory;
+                var configPath = Path.Combine(baseDir, "..", "..", "config", "backend.config.json");
+                
+                // Try alternative path if first doesn't exist
+                if (!File.Exists(configPath))
+                {
+                    configPath = Path.Combine(baseDir, "..", "config", "backend.config.json");
+                }
+                
+                if (File.Exists(configPath))
+                {
+                    var configJson = File.ReadAllText(configPath);
+                    var config = JsonSerializer.Deserialize<BackendConfig>(configJson, new JsonSerializerOptions
+                    {
+                        PropertyNameCaseInsensitive = true
+                    });
+                    
+                    if (config?.Backend != null)
+                    {
+                        var configUrl = $"{config.Backend.Protocol}://{config.Backend.Host}:{config.Backend.Port}";
+                        Helpers.SimpleLogger.Instance.Info($"Loaded backend URL from config: {configUrl}");
+                        return configUrl;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Helpers.SimpleLogger.Instance.Info($"Failed to load config file: {ex.Message}");
+            }
+            
+            // Fallback to default
+            Helpers.SimpleLogger.Instance.Info("Using default backend URL: http://127.0.0.1:8000");
+            return "http://127.0.0.1:8000";
+        }
+
         private string DetectBackendUrl()
         {
-            // Try common URLs in order of preference
+            // Step 1: Get candidate URL from config
+            var configUrl = LoadBackendUrlFromConfig();
+            
+            // Step 2: Try to connect to config URL first
             var candidateUrls = new[]
             {
+                configUrl,
                 "http://127.0.0.1:8000",
                 "http://localhost:8000",
-                "http://0.0.0.0:8000"
+                "http://127.0.0.1:8002",  // Alternative port sometimes used
+                "http://127.0.0.1:8123"   // Legacy engine_ia port
             };
 
             foreach (var url in candidateUrls)
@@ -72,8 +132,9 @@ namespace CatalogadorEsSalud.Services
                 }
             }
 
-            // Default to localhost if detection fails
-            return "http://127.0.0.1:8000";
+            // Default to config URL even if health check failed (service might start later)
+            Helpers.SimpleLogger.Instance.Info($"Backend health check failed, using config URL: {configUrl}");
+            return configUrl;
         }
 
         public async Task<bool> CheckHealthAsync()
