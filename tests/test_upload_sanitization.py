@@ -1,13 +1,15 @@
-import sys
 import importlib
+import sys
+
 from fastapi.testclient import TestClient
 
 sys.path.insert(
     0,
     str(importlib.util.find_spec("api").loader.path if importlib.util.find_spec("api") else "."),
 )
-from api.main import app
 from pathlib import Path
+
+from api.main import app
 
 
 def test_upload_sanitizes_and_limits(tmp_path, monkeypatch):

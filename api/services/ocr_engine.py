@@ -1,6 +1,6 @@
-from pathlib import Path
-import subprocess
 import shutil
+import subprocess
+from pathlib import Path
 
 
 def extract_text_from_pdf(path: Path) -> str:

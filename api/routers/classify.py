@@ -1,6 +1,8 @@
 from fastapi import APIRouter
-from ..models.classification import ClassifyRequest, ClassifyResponse
+
 from engine import trd
+
+from ..models.classification import ClassifyRequest, ClassifyResponse
 
 router = APIRouter()
 

@@ -1,6 +1,6 @@
 import os
-from pathlib import Path
 import sys
+from pathlib import Path
 
 # Ensure pytest uses a writable temp directory inside the repository so
 # Windows permission issues on the user's global Temp don't block tests.

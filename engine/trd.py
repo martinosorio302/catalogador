@@ -1,9 +1,9 @@
 """TRD/PCD logic (Python port)"""
 
-from typing import Optional, Dict, Any, List
-import unicodedata
 import json
+import unicodedata
 from pathlib import Path
+from typing import Any
 
 # Try to load TRD data from engine/data/trd.json if present. Keep a small
 # fallback embedded table in case the JSON is missing (backward compatible).
@@ -64,18 +64,18 @@ def reload_trd_data() -> dict:
     return summary
 
 
-def _get_list(name: str, default: List[Dict[str, Any]]):
+def _get_list(name: str, default: list[dict[str, Any]]):
     v = _LOADED.get(name)
     return v if isinstance(v, list) else default
 
 
-def _get_dict(name: str, default: Dict[str, Any]):
+def _get_dict(name: str, default: dict[str, Any]):
     v = _LOADED.get(name)
     return v if isinstance(v, dict) else default
 
 
 # Fallbacks (small, safe defaults)
-FALLBACK_TRD_TABLA: List[Dict[str, Any]] = [
+FALLBACK_TRD_TABLA: list[dict[str, Any]] = [
     {
         "code": "CODI/01",
         "titulo": "ACTAS DE SESIONES",
@@ -103,7 +103,7 @@ INVENTARIO_DESCRIPCION = _get_dict("INVENTARIO_DESCRIPCION", {})
 INDICE_TOKENS = _get_list("INDICE_TOKENS", [])
 
 
-def normaliza(s: Optional[str]) -> str:
+def normaliza(s: str | None) -> str:
     if not s:
         return ""
     n = unicodedata.normalize("NFD", s)
@@ -112,19 +112,19 @@ def normaliza(s: Optional[str]) -> str:
 
 
 def texto_indice(
-    asunto_unidad: Optional[str], titulo_doc: Optional[str], productor: Optional[str]
+    asunto_unidad: str | None, titulo_doc: str | None, productor: str | None
 ) -> str:
     parts = [p for p in (asunto_unidad, titulo_doc, productor) if p]
     return " | ".join(normaliza(p) for p in parts)
 
 
-def tokens_incluidos(texto: str, tokens: List[str]) -> bool:
+def tokens_incluidos(texto: str, tokens: list[str]) -> bool:
     return all(normaliza(t) in texto for t in tokens)
 
 
 def clasificar_por_tokens(
-    asunto_unidad: Optional[str], titulo_doc: Optional[str], productor: Optional[str]
-) -> Optional[str]:
+    asunto_unidad: str | None, titulo_doc: str | None, productor: str | None
+) -> str | None:
     txt = texto_indice(asunto_unidad, titulo_doc, productor)
     for r in INDICE_TOKENS:
         if tokens_incluidos(txt, r.get("tokens", [])):
@@ -133,7 +133,7 @@ def clasificar_por_tokens(
     return None
 
 
-def buscar_trd_por_codigo(code: str) -> Optional[Dict[str, Any]]:
+def buscar_trd_por_codigo(code: str) -> dict[str, Any] | None:
     if not code:
         return None
     for x in TRD_TABLA:
@@ -143,32 +143,39 @@ def buscar_trd_por_codigo(code: str) -> Optional[Dict[str, Any]]:
 
 
 def buscar_trd_por_asunto_titulo(
-    asunto: str, serie_sugerida: Optional[str] = None
-) -> Optional[Dict[str, Any]]:
+    asunto: str, serie_sugerida: str | None = None
+) -> dict[str, Any] | None:
     a = normaliza(asunto or "")
     s = normaliza(serie_sugerida or "")
     for x in TRD_TABLA:
-        if normaliza(x.get("asunto", "")) in a and normaliza(x.get("titulo", "")) in s:
+        asunto_match = normaliza(x.get("asunto", "")) in a
+        titulo_match = normaliza(x.get("titulo", "")) in s
+        if asunto_match and titulo_match:
             return x
     return None
 
 
-def aplicar_reglas_trd(input_obj: Dict[str, Optional[str]]) -> Dict[str, Any]:
+def aplicar_reglas_trd(input_obj: dict[str, str | None]) -> dict[str, Any]:
     por_asunto = None
     if input_obj.get("serie") and input_obj.get("asuntoUnidad"):
-        por_asunto = buscar_trd_por_asunto_titulo(
-            input_obj.get("asuntoUnidad", ""), input_obj.get("serie", "")
-        )
+        asunto_val = input_obj.get("asuntoUnidad") or ""
+        serie_val = input_obj.get("serie") or ""
+        por_asunto = buscar_trd_por_asunto_titulo(asunto_val, serie_val)
     code_tok = clasificar_por_tokens(
         input_obj.get("asuntoUnidad"),
         input_obj.get("titulo"),
         input_obj.get("productor"),
     )
-    entry = por_asunto or (buscar_trd_por_codigo(code_tok) if code_tok else None)
+    entry = por_asunto or (
+        buscar_trd_por_codigo(code_tok) if code_tok else None
+    )
 
     if entry:
-        temporalidad = "Permanente" if entry.get("valor") == "Permanente" else "Temporal"
-        destino = "Conservación Permanente" if temporalidad == "Permanente" else "Eliminación"
+        es_permanente = entry.get("valor") == "Permanente"
+        temporalidad = "Permanente" if es_permanente else "Temporal"
+        destino = (
+            "Conservación Permanente" if es_permanente else "Eliminación"
+        )
         if temporalidad == "Temporal" and entry.get("oaa", 0) >= 5:
             destino = "Transferencia al Archivo Central"
         return {

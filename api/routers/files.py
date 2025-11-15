@@ -1,8 +1,9 @@
-from fastapi import APIRouter, UploadFile, File, HTTPException
-from pathlib import Path
-import tempfile
-import os
 import logging
+import os
+import tempfile
+from pathlib import Path
+
+from fastapi import APIRouter, File, HTTPException, UploadFile
 
 logger = logging.getLogger("catalogador.files")
 
