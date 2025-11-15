@@ -14,10 +14,10 @@ def test_reload_requires_token(monkeypatch):
     client = TestClient(app)
     # set token
     monkeypatch.setenv("ADMIN_RELOAD_TOKEN", "tok123")
-    # without header -> 403
+    # without header -> 401 (Unauthorized)
     r = client.post("/reload")
-    assert r.status_code == 403
-    # with wrong header
+    assert r.status_code == 401
+    # with wrong header -> 403 (Forbidden)
     r = client.post("/reload", headers={"X-Admin-Token": "wrong"})
     assert r.status_code == 403
     # with correct header

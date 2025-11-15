@@ -9,6 +9,7 @@ from engine import trd
 
 try:
     import fitz  # PyMuPDF
+
     HAS_PYMUPDF = True
 except ImportError:
     HAS_PYMUPDF = False
@@ -37,7 +38,27 @@ def extract_text_from_pdf(pdf_path: Path) -> str:
 
 @router.post("/upload")
 async def upload(file: UploadFile = File(...)):
-    """Upload PDF file, extract text, and classify using TRD rules."""
+    """Upload PDF file, extract text, and classify using TRD rules.
+
+    Security features:
+    - Filename sanitization (path traversal prevention)
+    - File size limit (default 20MB, configurable via MAX_UPLOAD_BYTES)
+    - Content-Type validation
+    - Extension whitelist (.pdf only)
+    """
+    # Validate file extension
+    if not file.filename or not file.filename.lower().endswith(".pdf"):
+        raise HTTPException(
+            status_code=400, detail="Only PDF files are allowed. Filename must end with .pdf"
+        )
+
+    # Validate Content-Type (note: can be spoofed, but adds defense-in-depth)
+    if file.content_type and file.content_type not in [
+        "application/pdf",
+        "application/octet-stream",
+    ]:
+        logger.warning("Suspicious Content-Type: %s for file %s", file.content_type, file.filename)
+
     # Destination directory configurable via UPLOAD_DIR -> DATA_DIR -> repo-local data/uploads
     upload_dir = (
         os.getenv("UPLOAD_DIR")
@@ -46,8 +67,11 @@ async def upload(file: UploadFile = File(...)):
     )
     work = Path(upload_dir)
     work.mkdir(parents=True, exist_ok=True)
-    # sanitize filename to prevent path traversal
+
+    # Sanitize filename to prevent path traversal
     safe_name = Path(file.filename).name
+    if not safe_name or safe_name.startswith(".") or ".." in safe_name:
+        raise HTTPException(status_code=400, detail="Invalid filename")
     dest = work / safe_name
     # enforce max size if provided
     max_bytes = int(os.getenv("MAX_UPLOAD_BYTES") or 20000000)
@@ -93,7 +117,9 @@ async def upload(file: UploadFile = File(...)):
                 # Add inventory description if code found
                 code = classification_result.get("code")
                 if code:
-                    classification_result["descripcionInventario"] = trd.INVENTARIO_DESCRIPCION.get(code)
+                    classification_result["descripcionInventario"] = trd.INVENTARIO_DESCRIPCION.get(
+                        code
+                    )
             else:
                 classification_result["error"] = "No se pudo extraer texto del PDF"
         except Exception as e:

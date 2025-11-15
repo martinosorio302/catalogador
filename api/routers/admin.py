@@ -10,6 +10,7 @@ from engine import trd
 try:
     import openpyxl
     from openpyxl.styles import Font, PatternFill
+
     HAS_OPENPYXL = True
 except ImportError:
     HAS_OPENPYXL = False
@@ -22,16 +23,27 @@ logger = logging.getLogger("catalogador.admin")
 def reload_data(request: Request, x_admin_token: str | None = Header(None)):
     """Reload runtime data (TRD JSON) from disk.
 
+    Security:
+    - Requires X-Admin-Token header if ADMIN_RELOAD_TOKEN env var is set
+    - Logs all reload attempts with client IP
+    - Recommended: Set ADMIN_RELOAD_TOKEN in production
+
     If the environment variable `ADMIN_RELOAD_TOKEN` is set, require the exact
     token to be provided in the `X-Admin-Token` request header. If not set,
     the endpoint will allow unauthenticated reloads (useful for controlled
     internal networks)—but it's recommended to set a token in production.
     """
-    # optional auth by env var
+    client_ip = request.client.host if request.client else "unknown"
+
+    # Optional auth by env var
     token_required = os.environ.get("ADMIN_RELOAD_TOKEN")
     if token_required:
-        if not x_admin_token or x_admin_token != token_required:
-            raise HTTPException(status_code=403, detail="Forbidden")
+        if not x_admin_token:
+            logger.warning("Reload attempt without token from %s", client_ip)
+            raise HTTPException(status_code=401, detail="Missing X-Admin-Token header")
+        if x_admin_token != token_required:
+            logger.warning("Reload attempt with invalid token from %s", client_ip)
+            raise HTTPException(status_code=403, detail="Invalid token")
 
     try:
         logger.info(
@@ -56,8 +68,7 @@ def export_inventory():
     """Export TRD inventory as Excel file."""
     if not HAS_OPENPYXL:
         raise HTTPException(
-            status_code=501,
-            detail="Excel export not available (openpyxl not installed)"
+            status_code=501, detail="Excel export not available (openpyxl not installed)"
         )
 
     try:
@@ -77,13 +88,11 @@ def export_inventory():
             "AG",
             "AP",
             "OAA",
-            "Total"
+            "Total",
         ]
 
         # Style headers
-        header_fill = PatternFill(
-            start_color="366092", end_color="366092", fill_type="solid"
-        )
+        header_fill = PatternFill(start_color="366092", end_color="366092", fill_type="solid")
         header_font = Font(bold=True, color="FFFFFF")
 
         for col_num, header in enumerate(headers, 1):
@@ -102,7 +111,7 @@ def export_inventory():
             valor = entry.get("valor", "")
             if "años" in valor.lower():
                 try:
-                    plazo = int(''.join(filter(str.isdigit, valor)))
+                    plazo = int("".join(filter(str.isdigit, valor)))
                     ws.cell(row=row_num, column=4, value=plazo)
                 except (ValueError, TypeError):
                     ws.cell(row=row_num, column=4, value=valor)
@@ -142,18 +151,11 @@ def export_inventory():
 
         logger.info("Inventory exported: %d entries", len(trd.TRD_TABLA))
 
-        mime_type = (
-            "application/vnd.openxmlformats-officedocument."
-            "spreadsheetml.sheet"
-        )
+        mime_type = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
         return StreamingResponse(
             output,
             media_type=mime_type,
-            headers={
-                "Content-Disposition": (
-                    "attachment; filename=inventario_trd.xlsx"
-                )
-            }
+            headers={"Content-Disposition": ("attachment; filename=inventario_trd.xlsx")},
         )
 
     except Exception as e:
