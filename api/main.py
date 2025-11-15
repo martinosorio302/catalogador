@@ -1,6 +1,8 @@
-from fastapi import FastAPI
-from .routers import health, classify, files, admin
 import logging
+
+from fastapi import FastAPI
+
+from .routers import admin, classify, files, health
 
 app = FastAPI(title="Catalogador – API")
 
@@ -8,7 +10,8 @@ app = FastAPI(title="Catalogador – API")
 logger = logging.getLogger("catalogador")
 if not logger.handlers:
     logging.basicConfig(
-        level=logging.INFO, format="%(asctime)s %(levelname)s %(name)s: %(message)s"
+        level=logging.INFO,
+        format="%(asctime)s %(levelname)s %(name)s: %(message)s",
     )
 
 app.include_router(health.router, prefix="")

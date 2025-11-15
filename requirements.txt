@@ -10,6 +10,7 @@ annotated-types==0.7.0
 typing-extensions==4.15.0
 
 # File processing / OCR
+PyMuPDF==1.24.14
 pdfplumber==0.11.7
 pdfminer.six==20250506
 python-multipart==0.0.20
