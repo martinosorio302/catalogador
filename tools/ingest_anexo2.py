@@ -469,12 +469,13 @@ CREATE INDEX IF NOT EXISTS idx_valor_serie ON series_retencion(valor_serie);
     seed["generated_at"] = datetime.datetime.utcnow().isoformat()
     safe_write_json(seedjson_path, seed)
 
-    print("\nOutputs generated:")
-    print(" - JSON:", json_path)
-    print(" - CSV :", csv_path)
-    print(" - SQL schema:", schema_path)
-    print(" - SQL seed  :", seed_path)
-    print(" - Seed JSON :", seedjson_path)
+    logger.info("")
+    logger.info("Outputs generated:")
+    logger.info(" - JSON: %s", json_path)
+    logger.info(" - CSV : %s", csv_path)
+    logger.info(" - SQL schema: %s", schema_path)
+    logger.info(" - SQL seed  : %s", seed_path)
+    logger.info(" - Seed JSON : %s", seedjson_path)
 
 
 def main(argv: list[str] | None = None) -> int:
@@ -494,7 +495,7 @@ def main(argv: list[str] | None = None) -> int:
     try:
         pdf = find_pdf(args.pdf)
     except FileNotFoundError as e:
-        print("Error:", e, file=sys.stderr)
+        logger.error("Error: %s", e)
         return 2
 
     outdir = Path(args.outdir)
@@ -508,14 +509,14 @@ def main(argv: list[str] | None = None) -> int:
     # install pdfplumber if necessary. Do not pre-exit here.
 
     if args.force or not txt_path.exists():
-        print("Extracting text with pdftotext...")
+        logger.info("Extracting text with pdftotext...")
         run_pdftotext(pdf, txt_path)
     else:
-        print("Reusing existing extraction at", txt_path)
+        logger.info("Reusing existing extraction at %s", txt_path)
 
     parsed = parse_layout_text(txt_path)
     if not parsed:
-        print("No rows parsed. Check PDF/layout/regex.", file=sys.stderr)
+        logger.error("No rows parsed. Check PDF/layout/regex.")
         return 4
 
     export_artifacts(parsed, pdf, outdir)

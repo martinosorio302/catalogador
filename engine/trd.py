@@ -223,5 +223,6 @@ if __name__ == "__main__":
         },
     ]
     for s in samples:
-        print("Input:", s)
-        print("Result:", aplicar_reglas_trd(s))
+        logger.info("Testing sample input: %s", s)
+        result = aplicar_reglas_trd(s)
+        logger.info("Classification result: %s", result)

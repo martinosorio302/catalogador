@@ -9,7 +9,10 @@ import argparse
 import csv
 import hashlib
 import json
+import logging
 from pathlib import Path
+
+logger = logging.getLogger(__name__)
 
 
 def hash_row(row):
@@ -100,7 +103,7 @@ def main():
     src = Path(args.src)
     outdir = Path(args.outdir)
     if not src.exists():
-        print("Source not found:", src)
+        logger.error("Source not found: %s", src)
         return
     data = load_json(src)
     if isinstance(data, dict):
@@ -114,9 +117,13 @@ def main():
 
     write_csv(rows, csv_out)
     write_sql(rows, sql_out)
-    print("Wrote", csv_out)
-    print("Wrote", sql_out)
+    logger.info("Wrote %s", csv_out)
+    logger.info("Wrote %s", sql_out)
 
 
 if __name__ == "__main__":
+    logging.basicConfig(
+        level=logging.INFO,
+        format="[%(levelname)s] %(message)s",
+    )
     main()
