@@ -17,3 +17,16 @@ def classify(req: ClassifyRequest):
     if code:
         out["descripcionInventario"] = trd.INVENTARIO_DESCRIPCION.get(code)
     return out
+
+
+@router.get("/trd-info")
+def get_trd_info():
+    """Get TRD table information and statistics."""
+    codes = {entry.get("code") for entry in trd.TRD_TABLA if entry.get("code")}
+    return {
+        "total_entries": len(trd.TRD_TABLA),
+        "total_codes": len(codes),
+        "sample_entries": trd.TRD_TABLA[:5] if len(trd.TRD_TABLA) > 0 else [],
+        "index_tokens": len(trd.INDICE_TOKENS),
+        "inventory_descriptions": len(trd.INVENTARIO_DESCRIPCION),
+    }

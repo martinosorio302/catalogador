@@ -24,6 +24,7 @@ numpy==1.26.4
 pandas==2.2.2
 scikit-learn==1.4.2
 joblib==1.4.0
+openpyxl==3.1.5
 
 # OpenAI
 openai==2.7.1

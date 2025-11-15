@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Release")]
 [assembly: System.Reflection.AssemblyDescriptionAttribute("Desktop application for document cataloging, OCR, and TRD classification")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+c8126efc4e9ed464e559d6dfdbf370117d561098")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+b435664a02a6e87f4b66d91e53a57cd05636497e")]
 [assembly: System.Reflection.AssemblyProductAttribute("Catalogador EsSalud")]
 [assembly: System.Reflection.AssemblyTitleAttribute("CatalogadorEsSalud")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
