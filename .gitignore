@@ -28,7 +28,26 @@ build/
 logs/
 *.log
 
+# Temporary files
+temp_*.json
+temp_*.txt
+autofix_*.txt
+*.tmp
+*.bak
+*.old
+*~
+
+# Backup/corrupt directories
+.git.backup/
+.git.corrupt*/
+backup_repo/
+_archive/
+
+# Test environments
+test_venv/
+
+# Ruff cache
+.ruff_cache/
+
 # Git LFS pointers are tracked separately
-node_modules
-node_modules
-node_modules
+node_modules/
