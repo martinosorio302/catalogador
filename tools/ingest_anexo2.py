@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
-"""
-Ingest ANEXO 2 (PCD EsSalud) -> Normalizacion archivistica
+"""Ingest ANEXO 2 (PCD EsSalud) -> Normalizacion archivistica.
+
 - Convert PDF -> text with layout (pdftotext)
 - Parse Series/Fragments/Codes/Retention/Valuation
 - Calculate Valuation: ELIMINACION / TRANSFERENCIA
@@ -18,6 +18,7 @@ import argparse
 import csv
 import hashlib
 import json
+import logging
 import os
 import re
 import shutil
@@ -28,10 +29,12 @@ from typing import Any
 
 try:
     import portalocker
-except Exception:
+except ImportError:
     portalocker = None
 
 import tempfile
+
+logger = logging.getLogger(__name__)
 
 
 def find_pdf(hint: str | None) -> Path:
@@ -251,16 +254,21 @@ def export_artifacts(parsed: list[dict[str, Any]], pdf_path: Path, outdir: Path)
                         tf.flush()
                         try:
                             os.fsync(tf.fileno())
-                        except Exception:
-                            pass
+                        except OSError as e:
+                            logger.warning(
+                                "fsync failed for %s (non-critical): %s",
+                                dest, e
+                            )
                     os.replace(tmp_path, str(dest))
                     tmp_path = None
             finally:
                 if tmp_path and os.path.exists(tmp_path):
                     try:
                         os.remove(tmp_path)
-                    except Exception:
-                        pass
+                    except OSError as e:
+                        logger.warning(
+                            "Failed to remove temp file %s: %s", tmp_path, e
+                        )
         else:
             fd, tmp_path = tempfile.mkstemp(
                 prefix=dest.name + ".", suffix=".tmp", dir=str(dest.parent)
@@ -271,16 +279,20 @@ def export_artifacts(parsed: list[dict[str, Any]], pdf_path: Path, outdir: Path)
                     tf.flush()
                     try:
                         os.fsync(tf.fileno())
-                    except Exception:
-                        pass
+                    except OSError as e:
+                        logger.warning(
+                            "fsync failed for %s (non-critical): %s", dest, e
+                        )
                 os.replace(tmp_path, str(dest))
                 tmp_path = None
             finally:
                 if tmp_path and os.path.exists(tmp_path):
                     try:
                         os.remove(tmp_path)
-                    except Exception:
-                        pass
+                    except OSError as e:
+                        logger.warning(
+                            "Failed to remove temp file %s: %s", tmp_path, e
+                        )
 
     json_path = data_dir / "retencion_normalizada.json"
     safe_write_json(json_path, parsed)

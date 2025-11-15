@@ -1,10 +1,13 @@
 """TRD/PCD logic (Python port)"""
 
 import json
+import logging
 import unicodedata
 from functools import lru_cache
 from pathlib import Path
 from typing import Any
+
+logger = logging.getLogger(__name__)
 
 # Try to load TRD data from engine/data/trd.json if present. Keep a small
 # fallback embedded table in case the JSON is missing (backward compatible).
@@ -14,7 +17,8 @@ if _DATA_FILE.exists():
     try:
         with _DATA_FILE.open("r", encoding="utf-8") as fh:
             _LOADED = json.load(fh)
-    except Exception:
+    except (json.JSONDecodeError, OSError) as e:
+        logger.error("Failed to load TRD data from %s: %s", _DATA_FILE, e)
         _LOADED = {}
 
 
@@ -65,8 +69,10 @@ def reload_trd_data() -> dict:
         }
         if errors:
             summary["errors"] = "; ".join(errors)
-    except Exception as e:
-        summary["errors"] = str(e)
+            logger.warning("TRD data validation errors: %s", summary["errors"])
+    except (json.JSONDecodeError, OSError, KeyError) as e:
+        summary["errors"] = f"{type(e).__name__}: {e}"
+        logger.exception("Failed to reload TRD data")
     return summary
 
 
