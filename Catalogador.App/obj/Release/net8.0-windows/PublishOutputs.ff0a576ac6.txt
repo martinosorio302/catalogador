@@ -1,0 +1,15 @@
+C:\Users\USER\Desktop\Catalogador\publish_v1.0.1\Frontend\CatalogadorEsSalud.exe
+C:\Users\USER\Desktop\Catalogador\publish_v1.0.1\Frontend\icon.ico
+C:\Users\USER\Desktop\Catalogador\publish_v1.0.1\Frontend\CatalogadorEsSalud.dll
+C:\Users\USER\Desktop\Catalogador\publish_v1.0.1\Frontend\CatalogadorEsSalud.deps.json
+C:\Users\USER\Desktop\Catalogador\publish_v1.0.1\Frontend\CatalogadorEsSalud.runtimeconfig.json
+C:\Users\USER\Desktop\Catalogador\publish_v1.0.1\Frontend\CatalogadorEsSalud.pdb
+C:\Users\USER\Desktop\Catalogador\publish_v1.0.1\Frontend\ClosedXML.dll
+C:\Users\USER\Desktop\Catalogador\publish_v1.0.1\Frontend\ClosedXML.Parser.dll
+C:\Users\USER\Desktop\Catalogador\publish_v1.0.1\Frontend\DocumentFormat.OpenXml.dll
+C:\Users\USER\Desktop\Catalogador\publish_v1.0.1\Frontend\DocumentFormat.OpenXml.Framework.dll
+C:\Users\USER\Desktop\Catalogador\publish_v1.0.1\Frontend\ExcelNumberFormat.dll
+C:\Users\USER\Desktop\Catalogador\publish_v1.0.1\Frontend\Newtonsoft.Json.dll
+C:\Users\USER\Desktop\Catalogador\publish_v1.0.1\Frontend\RBush.dll
+C:\Users\USER\Desktop\Catalogador\publish_v1.0.1\Frontend\SixLabors.Fonts.dll
+C:\Users\USER\Desktop\Catalogador\publish_v1.0.1\Frontend\System.IO.Packaging.dll

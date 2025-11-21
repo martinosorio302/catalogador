@@ -3,6 +3,7 @@ using System.IO;
 using System.Net.Http;
 using System.Text.Json;
 using System.Threading.Tasks;
+using Catalogador.App.Models;
 using CatalogadorEsSalud.Models;
 
 namespace CatalogadorEsSalud.Services
@@ -95,8 +96,8 @@ namespace CatalogadorEsSalud.Services
             }
             
             // Fallback to default
-            Helpers.SimpleLogger.Instance.Info("Using default backend URL: http://127.0.0.1:8000");
-            return "http://127.0.0.1:8000";
+            Helpers.SimpleLogger.Instance.Info("Using default backend URL: http://127.0.0.1:8001");
+            return "http://127.0.0.1:8001";
         }
 
         private string DetectBackendUrl()
@@ -108,10 +109,13 @@ namespace CatalogadorEsSalud.Services
             var candidateUrls = new[]
             {
                 configUrl,
-                "http://127.0.0.1:8000",
+                "http://127.0.0.1:8001",  // Current Catalogador port (FastAPI)
+                "http://localhost:8001",
+                "http://127.0.0.1:8000",  // Legacy standard port
                 "http://localhost:8000",
-                "http://127.0.0.1:8002",  // Alternative port sometimes used
-                "http://127.0.0.1:8123"   // Legacy engine_ia port
+                "http://127.0.0.1:8002",  // Alternative port
+                "http://localhost:8002",
+                "http://127.0.0.1:8006"   // Legacy fallback (deprecated)
             };
 
             foreach (var url in candidateUrls)
@@ -256,6 +260,34 @@ namespace CatalogadorEsSalud.Services
             catch (Exception ex)
             {
                 Helpers.SimpleLogger.Instance.Error($"Inventory export failed: {ex.Message}");
+                throw;
+            }
+        }
+
+        /// <summary>
+        /// Obtiene todas las series documentales del TRD de EsSalud
+        /// </summary>
+        public async Task<ResponseSeriesTrd> ObtenerSeriesTrdAsync()
+        {
+            try
+            {
+                Helpers.SimpleLogger.Instance.Info("Obteniendo series TRD del backend...");
+                
+                var response = await _httpClient.GetAsync("/api/inventario/trd/series");
+                response.EnsureSuccessStatusCode();
+
+                var content = await response.Content.ReadAsStringAsync();
+                var result = JsonSerializer.Deserialize<ResponseSeriesTrd>(content, new JsonSerializerOptions
+                {
+                    PropertyNameCaseInsensitive = true
+                });
+
+                Helpers.SimpleLogger.Instance.Info($"Series TRD obtenidas exitosamente: {result?.TotalSeries ?? 0} series");
+                return result ?? new ResponseSeriesTrd { Series = Array.Empty<SerieTrd>() };
+            }
+            catch (Exception ex)
+            {
+                Helpers.SimpleLogger.Instance.Error($"Error obteniendo series TRD: {ex.Message}");
                 throw;
             }
         }

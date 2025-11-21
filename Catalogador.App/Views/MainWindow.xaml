@@ -88,12 +88,22 @@
                                    FontSize="16" 
                                    FontWeight="Bold" 
                                    Margin="0,0,0,5"/>
-                        <Button x:Name="btnLoadTrd" 
-                                Content="Cargar TRD" 
-                                Width="120" 
-                                Height="30"
-                                HorizontalAlignment="Left"
-                                Click="BtnLoadTrd_Click"/>
+                        <StackPanel Orientation="Horizontal">
+                            <Button x:Name="btnLoadTrd" 
+                                    Content="Cargar TRD" 
+                                    Width="120" 
+                                    Height="30"
+                                    Margin="0,0,10,0"
+                                    Click="BtnLoadTrd_Click"/>
+                            <Button x:Name="btnVerTrdCompleto" 
+                                    Content="📋 Ver TRD Completo (541 Series)" 
+                                    Width="250" 
+                                    Height="30"
+                                    Background="#4472C4"
+                                    Foreground="White"
+                                    FontWeight="SemiBold"
+                                    Click="BtnVerTrdCompleto_Click"/>
+                        </StackPanel>
                     </StackPanel>
 
                     <Border Grid.Row="1" 

@@ -26,7 +26,7 @@ namespace CatalogadorEsSalud.Models
         public string Host { get; set; } = "127.0.0.1";
 
         [JsonPropertyName("port")]
-        public int Port { get; set; } = 8000;
+        public int Port { get; set; } = 8001;
 
         [JsonPropertyName("protocol")]
         public string Protocol { get; set; } = "http";

@@ -1,0 +1,15 @@
+C:\Users\USER\Desktop\Catalogador\Catalogador.App\bin\Release\net8.0-windows\publish\CatalogadorEsSalud.exe
+C:\Users\USER\Desktop\Catalogador\Catalogador.App\bin\Release\net8.0-windows\publish\icon.ico
+C:\Users\USER\Desktop\Catalogador\Catalogador.App\bin\Release\net8.0-windows\publish\CatalogadorEsSalud.dll
+C:\Users\USER\Desktop\Catalogador\Catalogador.App\bin\Release\net8.0-windows\publish\CatalogadorEsSalud.deps.json
+C:\Users\USER\Desktop\Catalogador\Catalogador.App\bin\Release\net8.0-windows\publish\CatalogadorEsSalud.runtimeconfig.json
+C:\Users\USER\Desktop\Catalogador\Catalogador.App\bin\Release\net8.0-windows\publish\CatalogadorEsSalud.pdb
+C:\Users\USER\Desktop\Catalogador\Catalogador.App\bin\Release\net8.0-windows\publish\ClosedXML.dll
+C:\Users\USER\Desktop\Catalogador\Catalogador.App\bin\Release\net8.0-windows\publish\ClosedXML.Parser.dll
+C:\Users\USER\Desktop\Catalogador\Catalogador.App\bin\Release\net8.0-windows\publish\DocumentFormat.OpenXml.dll
+C:\Users\USER\Desktop\Catalogador\Catalogador.App\bin\Release\net8.0-windows\publish\DocumentFormat.OpenXml.Framework.dll
+C:\Users\USER\Desktop\Catalogador\Catalogador.App\bin\Release\net8.0-windows\publish\ExcelNumberFormat.dll
+C:\Users\USER\Desktop\Catalogador\Catalogador.App\bin\Release\net8.0-windows\publish\Newtonsoft.Json.dll
+C:\Users\USER\Desktop\Catalogador\Catalogador.App\bin\Release\net8.0-windows\publish\RBush.dll
+C:\Users\USER\Desktop\Catalogador\Catalogador.App\bin\Release\net8.0-windows\publish\SixLabors.Fonts.dll
+C:\Users\USER\Desktop\Catalogador\Catalogador.App\bin\Release\net8.0-windows\publish\System.IO.Packaging.dll
